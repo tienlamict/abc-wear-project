@@ -1,0 +1,158 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Category {
+  id       String     @id @db.VarChar(64) // Main System id
+  parentId String?    @db.VarChar(64)
+  parent   Category?  @relation("Tree", fields: [parentId], references: [id])
+  children Category[] @relation("Tree")
+  name     String     @db.VarChar(191)
+  slug     String     @unique @db.VarChar(191)
+  products Product[]
+
+  @@map("category")
+}
+
+model Product {
+  id          String           @id @db.VarChar(64)
+  categoryId  String           @db.VarChar(64)
+  category    Category         @relation(fields: [categoryId], references: [id])
+  name        String           @db.VarChar(255)
+  description String           @db.Text
+  images      Json // array of URLs
+  isActive    Boolean
+  createdAt   DateTime         @default(now()) @db.DateTime(3)
+  syncedAt    DateTime         @db.DateTime(3)
+  variants    ProductVariant[]
+
+  @@index([categoryId, isActive])
+  @@index([name])
+  @@map("product")
+}
+
+model ProductVariant {
+  sku          String  @id @db.VarChar(64)
+  productId    String  @db.VarChar(64)
+  product      Product @relation(fields: [productId], references: [id])
+  size         String  @db.VarChar(16)
+  color        String  @db.VarChar(64)
+  price        Int // VND
+  availableQty Int
+
+  @@index([productId])
+  @@index([price])
+  @@map("product_variant")
+}
+
+model Member {
+  id           String    @id @default(uuid()) @db.Char(36)
+  email        String    @unique @db.VarChar(191) // lowercase
+  passwordHash String    @db.VarChar(255)
+  fullName     String    @db.VarChar(191)
+  phone        String?   @db.VarChar(20)
+  // single default shipping address (replaces an address book)
+  shipLine1    String?   @db.VarChar(255)
+  shipWard     String?   @db.VarChar(100)
+  shipDistrict String?   @db.VarChar(100)
+  shipProvince String?   @db.VarChar(100)
+  failedLogins Int       @default(0)
+  lockedUntil  DateTime? @db.DateTime(3)
+  createdAt    DateTime  @default(now()) @db.DateTime(3)
+  orders       Order[]
+
+  @@map("member")
+}
+
+model Cart {
+  id        String     @id @default(uuid()) @db.Char(36)
+  memberId  String?    @unique @db.Char(36)
+  sessionId String?    @unique @db.Char(36)
+  items     CartItem[]
+
+  @@map("cart")
+}
+
+model CartItem {
+  cartId   String @db.Char(36)
+  cart     Cart   @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  sku      String @db.VarChar(64)
+  quantity Int
+
+  @@id([cartId, sku])
+  @@map("cart_item")
+}
+
+model Order {
+  id             String      @id @default(uuid()) @db.Char(36)
+  code           String      @unique @db.VarChar(20) // ABC-YYMMDD-XXXXX
+  idempotencyKey String      @unique @db.Char(36)
+  memberId       String?     @db.Char(36)
+  member         Member?     @relation(fields: [memberId], references: [id])
+  customerName   String      @db.VarChar(191)
+  customerEmail  String      @db.VarChar(191)
+  customerPhone  String      @db.VarChar(20)
+  shipLine1      String      @db.VarChar(255) // address snapshot
+  shipWard       String      @db.VarChar(100)
+  shipDistrict   String      @db.VarChar(100)
+  shipProvince   String      @db.VarChar(100)
+  shippingMethod String      @db.VarChar(32)
+  shippingFee    Int
+  itemsTotal     Int
+  codAmount      Int
+  status         OrderStatus @default(CONFIRMED)
+  // queue for sending to Main (replaces an outbox table)
+  sendAttempts   Int         @default(0)
+  nextSendAt     DateTime?   @default(now()) @db.DateTime(3) // null = nothing left to send
+  lastSendError  String?     @db.Text
+  mainOrderId    String?     @db.VarChar(64)
+  trackingNumber String?     @db.VarChar(64)
+  createdAt      DateTime    @default(now()) @db.DateTime(3)
+  updatedAt      DateTime    @updatedAt @db.DateTime(3)
+  items          OrderItem[]
+
+  @@index([memberId, createdAt])
+  @@index([status, nextSendAt])
+  @@map("orders")
+}
+
+enum OrderStatus {
+  CONFIRMED
+  SENT_TO_MAIN
+  PICKING
+  SHIPPING
+  DELIVERED
+  DELIVERY_FAILED
+}
+
+model OrderItem {
+  id          String @id @default(uuid()) @db.Char(36)
+  orderId     String @db.Char(36)
+  order       Order  @relation(fields: [orderId], references: [id])
+  sku         String @db.VarChar(64)
+  productName String @db.VarChar(255) // snapshot
+  size        String @db.VarChar(16)
+  color       String @db.VarChar(64)
+  unitPrice   Int
+  quantity    Int
+
+  @@map("order_item")
+}
+
+model SyncLog {
+  id        String   @id @default(uuid()) @db.Char(36)
+  direction String   @db.VarChar(3) // IN | OUT
+  iface     String   @db.VarChar(8) // IF-01..IF-05
+  recordKey String?  @db.VarChar(64)
+  result    String   @db.VarChar(8) // OK | ERROR | RETRY
+  message   String?  @db.Text
+  createdAt DateTime @default(now()) @db.DateTime(3)
+
+  @@index([iface, createdAt])
+  @@map("sync_log")
+}

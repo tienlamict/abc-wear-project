@@ -11,15 +11,15 @@
 - [x] 5. `pnpm dev` chạy song song Next.js, worker, mock (`concurrently`)
 - [x] 6. `README.md`, `DECISIONS.md`, `PROGRESS.md`
 
-## M1 — CSDL, thư viện dùng chung, mock Main System, đồng bộ sản phẩm (IF-01, IF-02)
+## M1 — CSDL, thư viện dùng chung, mock Main System, đồng bộ sản phẩm (IF-01, IF-02) ✅
 
-- [ ] 1. `prisma/schema.prisma`, migration `init`, `src/lib/db.ts`
-- [ ] 2. `src/lib/errors.ts`: mã lỗi, `AppError`, `toErrorResponse()`
-- [ ] 3. `money.ts`, `order-code.ts`, `order-state.ts` + unit test
-- [ ] 4. `mock-main/generate-seed.ts` → `seed.json`; `GET /main/catalog`, `GET /main/stock`
-- [ ] 5. `src/modules/integration`: `MainSystemClient`, `HttpMainSystemClient`, ghi `sync_log`
-- [ ] 6. `syncCatalog()`, `syncStock()`; worker theo chu kỳ; `pnpm sync`
-- [ ] 7. Test integration `syncCatalog()` với mock thật
+- [x] 1. `prisma/schema.prisma`, migration `init`, `src/lib/db.ts`
+- [x] 2. `src/lib/errors.ts`: mã lỗi, `AppError`, `toErrorResponse()`
+- [x] 3. `money.ts`, `order-code.ts`, `order-state.ts` + unit test
+- [x] 4. `mock-main/generate-seed.ts` → `seed.json`; `GET /main/catalog`, `GET /main/stock`
+- [x] 5. `src/modules/integration`: `MainSystemClient`, `HttpMainSystemClient`, ghi `sync_log`
+- [x] 6. `syncCatalog()`, `syncStock()`; worker theo chu kỳ; `pnpm sync`
+- [x] 7. Test integration `syncCatalog()` với mock thật
 
 ## M2 — Tìm kiếm và duyệt sản phẩm (PS-01 → PS-04)
 
