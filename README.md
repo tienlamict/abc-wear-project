@@ -32,7 +32,12 @@ Mỗi lần gọi Main System ghi một dòng vào bảng `sync_log`.
 | `mock`     | http://localhost:4100/healthz | Mock Main System (`mock-main/`): `GET /main/catalog`, `GET /main/stock` |
 
 Trang đã có: `/` (trang chủ), `/danh-muc/[slug]` (danh mục, lọc, sắp xếp), `/tim-kiem?q=` (tìm không dấu),
-`/san-pham/[id]` (chi tiết, tồn kho theo size/màu). API: `GET /api/categories`, `GET /api/products`, `GET /api/products/[id]`.
+`/san-pham/[id]` (chi tiết, tồn kho theo size/màu), `/dang-ky`, `/dang-nhap`, `/quen-mat-khau`, `/dat-lai-mat-khau`,
+`/tai-khoan` (hồ sơ, địa chỉ mặc định, đổi mật khẩu; cần đăng nhập).
+API: `/api/categories`, `/api/products`, `/api/products/[id]`, `/api/auth/*` (register, login, logout, forgot-password,
+reset-password), `/api/me`, `/api/me/change-password`.
+
+Email (đặt lại mật khẩu, …) không gửi ra ngoài mà vào Mailpit: mở http://localhost:8025 để xem.
 
 Dịch vụ trong Docker:
 

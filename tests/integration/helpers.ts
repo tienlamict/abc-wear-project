@@ -24,3 +24,15 @@ export async function resetCatalog(): Promise<void> {
   await prisma.category.deleteMany({ where: { parentId: { not: null } } });
   await prisma.category.deleteMany();
 }
+
+/** Deletes every member (and their carts) in the test database. */
+export async function resetMembers(): Promise<void> {
+  if (
+    !process.env.TEST_DATABASE_URL ||
+    process.env.DATABASE_URL !== process.env.TEST_DATABASE_URL
+  ) {
+    throw new Error("Refusing to reset: DATABASE_URL is not the test database");
+  }
+  await prisma.cart.deleteMany({ where: { memberId: { not: null } } });
+  await prisma.member.deleteMany();
+}

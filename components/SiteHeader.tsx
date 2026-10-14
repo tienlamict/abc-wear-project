@@ -1,9 +1,16 @@
 import Link from "next/link";
 import type { CategoryNode } from "@/modules/catalog";
 import { CategoryMenu } from "./CategoryMenu";
+import { LogoutButton } from "./account/LogoutButton";
 
 /** Shown on every page: logo, search, cart, account, order lookup, categories. */
-export function SiteHeader({ categories }: { categories: CategoryNode[] }) {
+export function SiteHeader({
+  categories,
+  memberName,
+}: {
+  categories: CategoryNode[];
+  memberName: string | null;
+}) {
   return (
     <header className="relative border-b bg-white">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">
@@ -33,13 +40,30 @@ export function SiteHeader({ categories }: { categories: CategoryNode[] }) {
           </button>
         </form>
 
-        <nav aria-label="Tài khoản" className="ml-auto flex items-center gap-4 text-sm md:ml-0">
+        <nav
+          aria-label="Tài khoản"
+          className="ml-auto flex flex-wrap items-center justify-end gap-x-3 gap-y-1 whitespace-nowrap text-sm sm:gap-x-4 md:ml-0"
+        >
           <Link href="/tra-cuu-don" className="hover:underline">
             Tra cứu đơn
           </Link>
-          <Link href="/dang-nhap" className="hover:underline">
-            Đăng nhập
-          </Link>
+          {memberName ? (
+            <>
+              <Link
+                href="/tai-khoan"
+                data-testid="member-name"
+                className="max-w-28 truncate font-medium hover:underline sm:max-w-40"
+                title={memberName}
+              >
+                {memberName}
+              </Link>
+              <LogoutButton />
+            </>
+          ) : (
+            <Link href="/dang-nhap" className="hover:underline">
+              Đăng nhập
+            </Link>
+          )}
           <Link href="/gio-hang" className="hover:underline">
             Giỏ hàng (<span data-testid="cart-count">0</span>)
           </Link>

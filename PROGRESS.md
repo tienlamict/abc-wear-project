@@ -30,14 +30,14 @@
 - [x] 5. Component `ProductCard`, `FilterPanel`, `SortSelect`, `Pagination`, `PriceTag`, `VariantPicker`, `StockBadge`
 - [x] 6. Playwright (Chromium); E2E PS-01 → PS-04
 
-## M3 — Thành viên (MA-01 → MA-04)
+## M3 — Thành viên (MA-01 → MA-04) ✅
 
-- [ ] 1. `src/lib/auth.ts`: JWT (`jose`), cookie, `getCurrentMember()`
-- [ ] 2. `src/modules/member`: `register()`, `login()` (QT9), `updateProfile()`, `changePassword()`
-- [ ] 3. `src/lib/email.ts` + email đặt lại mật khẩu; `requestPasswordReset()`, `resetPassword()`
-- [ ] 4. Route `/api/auth/*`, `/api/me`, `/api/me/change-password`
-- [ ] 5. Trang `/dang-ky`, `/dang-nhap`, `/quen-mat-khau`, `/dat-lai-mat-khau`, `/tai-khoan`; `middleware.ts`; header thành viên
-- [ ] 6. Helper đọc email Mailpit; E2E MA-01 → MA-04; test khóa tài khoản
+- [x] 1. `src/lib/auth.ts`: JWT (`jose`), cookie, `getCurrentMember()`
+- [x] 2. `src/modules/member`: `register()`, `login()` (QT9), `updateProfile()`, `changePassword()`
+- [x] 3. `src/lib/email.ts` + email đặt lại mật khẩu; `requestPasswordReset()`, `resetPassword()`
+- [x] 4. Route `/api/auth/*`, `/api/me`, `/api/me/change-password`
+- [x] 5. Trang `/dang-ky`, `/dang-nhap`, `/quen-mat-khau`, `/dat-lai-mat-khau`, `/tai-khoan`; `middleware.ts`; header thành viên
+- [x] 6. Helper đọc email Mailpit; E2E MA-01 → MA-04; test khóa tài khoản
 
 ## M4 — Giỏ hàng và đặt hàng COD (OD-01 → OD-04, IF-03, IF-04)
 
