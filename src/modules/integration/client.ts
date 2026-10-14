@@ -4,15 +4,22 @@ import { type SyncLogEntry, writeSyncLog } from "./sync-log";
 import {
   type CatalogSnapshot,
   type Iface,
+  type MainOrderPayload,
+  type StockCheckResult,
   type StockItem,
+  type StockLine,
   catalogSnapshotSchema,
+  sendOrderResultSchema,
+  stockCheckResultSchema,
   stockSnapshotSchema,
 } from "./types";
 
-/** The only gateway to Main System. IF-03/IF-04 methods are added in M4. */
+/** The only gateway to Main System. */
 export interface MainSystemClient {
   fetchCatalog(): Promise<CatalogSnapshot>; // IF-01
   fetchStock(): Promise<StockItem[]>; // IF-02
+  checkStock(lines: StockLine[]): Promise<StockCheckResult>; // IF-03
+  sendOrder(order: MainOrderPayload): Promise<{ mainOrderId: string }>; // IF-04, idempotent on order.id
 }
 
 export type MainSystemErrorKind = "timeout" | "network" | "http" | "invalid_response";
@@ -42,6 +49,14 @@ interface CallSpec<S extends z.ZodType> {
   init?: RequestInit;
   recordKey?: string;
   summarize: (data: z.output<S>) => string;
+}
+
+function jsonBody(body: unknown): RequestInit {
+  return {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(body),
+  };
 }
 
 export class HttpMainSystemClient implements MainSystemClient {
@@ -76,6 +91,32 @@ export class HttpMainSystemClient implements MainSystemClient {
       summarize: (d) => `items=${d.items.length}`,
     });
     return data.items;
+  }
+
+  checkStock(lines: StockLine[]): Promise<StockCheckResult> {
+    return this.call({
+      iface: "IF-03",
+      direction: "OUT",
+      path: "/main/stock-check",
+      schema: stockCheckResultSchema,
+      init: jsonBody({ lines }),
+      summarize: (d) =>
+        d.ok
+          ? `lines=${lines.length} ok`
+          : `lines=${lines.length} short=${d.shortages.map((s) => s.sku).join(",")}`,
+    });
+  }
+
+  sendOrder(order: MainOrderPayload): Promise<{ mainOrderId: string }> {
+    return this.call({
+      iface: "IF-04",
+      direction: "OUT",
+      path: "/main/orders",
+      schema: sendOrderResultSchema,
+      init: jsonBody(order),
+      recordKey: order.code,
+      summarize: (d) => `mainOrderId=${d.mainOrderId}`,
+    });
   }
 
   /** One HTTP exchange with Main System = one sync_log row (OK or ERROR). */

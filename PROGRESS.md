@@ -39,17 +39,17 @@
 - [x] 5. Trang `/dang-ky`, `/dang-nhap`, `/quen-mat-khau`, `/dat-lai-mat-khau`, `/tai-khoan`; `middleware.ts`; header thành viên
 - [x] 6. Helper đọc email Mailpit; E2E MA-01 → MA-04; test khóa tài khoản
 
-## M4 — Giỏ hàng và đặt hàng COD (OD-01 → OD-04, IF-03, IF-04)
+## M4 — Giỏ hàng và đặt hàng COD (OD-01 → OD-04, IF-03, IF-04) ✅
 
-- [ ] 1. Cookie `sid`; `src/modules/order/cart.ts` (QT1, QT7); `mergeGuestCart()` (QT10)
-- [ ] 2. Route `/api/cart`, `/api/cart/items`, `/api/cart/items/[sku]`; badge giỏ
-- [ ] 3. `config/shipping-methods.json`; `/api/shipping-methods`
-- [ ] 4. Mock `POST /main/stock-check`, `POST /main/orders`, `POST /sim/fail-mode`; `checkStock()`, `sendOrder()`
-- [ ] 5. `src/modules/order/place-order.ts`; `POST /api/orders`
-- [ ] 6. Email xác nhận đơn (OD-04)
-- [ ] 7. Worker IF-04 `sendPendingOrders()` (thử lại lũy thừa, tối đa 10 lần)
-- [ ] 8. Trang `/gio-hang`, `/dat-hang` (3 bước), `/dat-hang/hoan-tat/[code]`
-- [ ] 9. Test integration `placeOrder()`, worker gửi lại; E2E OD-01 → OD-04
+- [x] 1. Cookie `sid`; `src/modules/order/cart.ts` (QT1, QT7); `mergeGuestCart()` (QT10)
+- [x] 2. Route `/api/cart`, `/api/cart/items`, `/api/cart/items/[sku]`; badge giỏ
+- [x] 3. `config/shipping-methods.json`; `/api/shipping-methods`
+- [x] 4. Mock `POST /main/stock-check`, `POST /main/orders`, `POST /sim/fail-mode`; `checkStock()`, `sendOrder()`
+- [x] 5. `src/modules/order/place-order.ts`; `POST /api/orders`
+- [x] 6. Email xác nhận đơn (OD-04)
+- [x] 7. Worker IF-04 `sendPendingOrders()` (thử lại lũy thừa, tối đa 10 lần)
+- [x] 8. Trang `/gio-hang`, `/dat-hang` (3 bước), `/dat-hang/hoan-tat/[code]`
+- [x] 9. Test integration `placeOrder()`, worker gửi lại; E2E OD-01 → OD-04
 
 ## M5 — Theo dõi đơn (OD-05, OD-06, IF-05)
 

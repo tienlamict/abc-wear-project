@@ -11,7 +11,7 @@ describe("HttpMainSystemClient", () => {
 
   beforeAll(async () => {
     server.get("/main/stock", async (_req, reply) => {
-      if (mode === "slow") await new Promise((r) => setTimeout(r, 500));
+      if (mode === "slow") await new Promise((r) => setTimeout(r, 1500));
       if (mode === "500") return reply.code(500).send("boom");
       if (mode === "bad-json") return reply.type("application/json").send("{not json");
       if (mode === "bad-shape") return { items: [{ sku: "A", qty: "many" }] };
@@ -26,7 +26,7 @@ describe("HttpMainSystemClient", () => {
   });
 
   const client = () =>
-    new HttpMainSystemClient({ baseUrl, timeoutMs: 200, log: async (e) => void logs.push(e) });
+    new HttpMainSystemClient({ baseUrl, timeoutMs: 1000, log: async (e) => void logs.push(e) });
 
   it("returns parsed data and logs one OK row", async () => {
     mode = "ok";

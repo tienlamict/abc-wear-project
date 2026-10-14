@@ -1,0 +1,14 @@
+[
+  {
+    "code": "STANDARD",
+    "name": "Tiêu chuẩn",
+    "description": "Giao trong 3–5 ngày làm việc",
+    "fee": 30000
+  },
+  {
+    "code": "EXPRESS",
+    "name": "Nhanh",
+    "description": "Giao trong 1–2 ngày làm việc",
+    "fee": 50000
+  }
+]

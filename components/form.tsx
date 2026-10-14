@@ -14,7 +14,7 @@ export type ApiResult<T> = { ok: true; data: T } | { ok: false; error: ApiFailur
 export async function callApi<T>(
   url: string,
   body?: unknown,
-  method: "POST" | "PATCH" = "POST",
+  method: "POST" | "PATCH" | "DELETE" = "POST",
 ): Promise<ApiResult<T>> {
   try {
     const res = await fetch(url, {

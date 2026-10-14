@@ -25,19 +25,31 @@ Mỗi lần gọi Main System ghi một dòng vào bảng `sync_log`.
 
 `pnpm dev` chạy song song ba tiến trình:
 
-| Tiến trình | Địa chỉ                       | Mô tả                                                                   |
-| ---------- | ----------------------------- | ----------------------------------------------------------------------- |
-| `web`      | http://localhost:3000         | Next.js (trang + `/api`)                                                |
-| `worker`   | —                             | Đồng bộ với Main System, gửi đơn (`worker/index.ts`)                    |
-| `mock`     | http://localhost:4100/healthz | Mock Main System (`mock-main/`): `GET /main/catalog`, `GET /main/stock` |
+| Tiến trình | Địa chỉ                       | Mô tả                                                                 |
+| ---------- | ----------------------------- | --------------------------------------------------------------------- |
+| `web`      | http://localhost:3000         | Next.js (trang + `/api`)                                              |
+| `worker`   | —                             | Đồng bộ với Main System, gửi đơn (`worker/index.ts`)                  |
+| `mock`     | http://localhost:4100/healthz | Mock Main System (`mock-main/`): IF-01 → IF-04, `/sim/*` để demo/test |
 
 Trang đã có: `/` (trang chủ), `/danh-muc/[slug]` (danh mục, lọc, sắp xếp), `/tim-kiem?q=` (tìm không dấu),
-`/san-pham/[id]` (chi tiết, tồn kho theo size/màu), `/dang-ky`, `/dang-nhap`, `/quen-mat-khau`, `/dat-lai-mat-khau`,
-`/tai-khoan` (hồ sơ, địa chỉ mặc định, đổi mật khẩu; cần đăng nhập).
-API: `/api/categories`, `/api/products`, `/api/products/[id]`, `/api/auth/*` (register, login, logout, forgot-password,
-reset-password), `/api/me`, `/api/me/change-password`.
+`/san-pham/[id]` (chi tiết, chọn size/màu, thêm giỏ), `/gio-hang`, `/dat-hang` (3 bước, không cần đăng nhập),
+`/dat-hang/hoan-tat/[code]`, `/dang-ky`, `/dang-nhap`, `/quen-mat-khau`, `/dat-lai-mat-khau`, `/tai-khoan`.
+API: `/api/categories`, `/api/products`, `/api/products/[id]`, `/api/auth/*`, `/api/me`, `/api/me/change-password`,
+`/api/cart`, `/api/cart/items`, `/api/cart/items/[sku]`, `/api/shipping-methods`, `POST /api/orders` (header `Idempotency-Key`).
 
-Email (đặt lại mật khẩu, …) không gửi ra ngoài mà vào Mailpit: mở http://localhost:8025 để xem.
+Email (đặt lại mật khẩu, xác nhận đơn) không gửi ra ngoài mà vào Mailpit: mở http://localhost:8025 để xem.
+
+Đơn mới ở trạng thái `CONFIRMED`; worker gửi sang Main System (IF-04) mỗi 5 giây, lỗi thì thử lại sau
+10 s, 20 s, 40 s… (tối đa 10 phút một lần, 10 lần). Phí giao hàng đọc từ
+[config/shipping-methods.json](config/shipping-methods.json) lúc build/khởi động.
+Giả lập Main System lỗi để xem worker gửi lại (`mode`: `error` trả 503, `timeout` treo 10 s, `none`;
+`count` tùy chọn: chỉ làm hỏng N request tiếp theo):
+
+```bash
+curl -X POST localhost:4100/sim/fail-mode -H 'content-type: application/json' -d '{"mode":"error","count":2}'
+```
+
+Đơn mock đã nhận: http://localhost:4100/sim/orders.
 
 Dịch vụ trong Docker:
 

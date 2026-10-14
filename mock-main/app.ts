@@ -1,11 +1,56 @@
 import Fastify, { type FastifyRequest } from "fastify";
+import { z } from "zod";
 import seedData from "./seed.json";
-import type { Seed, SeedProduct } from "./types";
+import type { MockOrder, Seed, SeedProduct, SeedVariant } from "./types";
 
 export interface MockMainOptions {
   /** Defaults to a fresh copy of seed.json; state lives in memory only. */
   seed?: Seed;
+  /** How long a request hangs in fail-mode "timeout" (default 10 s, longer than the web's 3 s). */
+  hangMs?: number;
 }
+
+export const FAIL_MODES = ["none", "error", "timeout"] as const;
+export type FailMode = (typeof FAIL_MODES)[number];
+
+const stockCheckSchema = z.object({
+  lines: z.array(z.object({ sku: z.string().min(1), qty: z.number().int().positive() })).min(1),
+});
+
+const orderSchema = z.object({
+  id: z.string().min(1),
+  code: z.string().min(1),
+  createdAt: z.string(),
+  customer: z.object({ name: z.string(), email: z.string(), phone: z.string() }),
+  shippingAddress: z.object({
+    line1: z.string(),
+    ward: z.string(),
+    district: z.string(),
+    province: z.string(),
+  }),
+  shippingMethod: z.string(),
+  shippingFee: z.number().int(),
+  itemsTotal: z.number().int(),
+  codAmount: z.number().int(),
+  items: z
+    .array(
+      z.object({
+        sku: z.string().min(1),
+        productName: z.string(),
+        size: z.string(),
+        color: z.string(),
+        unitPrice: z.number().int(),
+        quantity: z.number().int().positive(),
+      }),
+    )
+    .min(1),
+});
+
+const failModeSchema = z.object({
+  mode: z.enum(FAIL_MODES),
+  /** Fail only the next N requests to /main/*, then go back to "none". */
+  count: z.number().int().positive().optional(),
+});
 
 const SWATCH: Record<string, string> = {
   Đen: "#1f2937",
@@ -36,11 +81,30 @@ function placeholderSvg(product: SeedProduct, n: number): string {
 }
 
 export function buildMockMain(options: MockMainOptions = {}) {
-  const app = Fastify({ logger: { level: "warn" } });
+  // forceCloseConnections: close() must not wait on keep-alive sockets left by fail-mode "timeout".
+  const app = Fastify({ logger: { level: "warn" }, forceCloseConnections: true });
   const state: Seed = structuredClone(options.seed ?? (seedData as Seed));
   const productsById = new Map(state.products.map((p) => [p.id, p]));
+  const variantsBySku = new Map<string, SeedVariant>(
+    state.products.flatMap((p) => p.variants.map((v) => [v.sku, v] as const)),
+  );
+  const orders = new Map<string, MockOrder>(); // by the website's order id
+  const hangMs = options.hangMs ?? 10_000;
+  let fail: { mode: FailMode; remaining: number | null } = { mode: "none", remaining: null };
 
   const baseUrl = (req: FastifyRequest) => `${req.protocol}://${req.host}`;
+
+  // Simulated outages apply to the website-facing API only (/main/*).
+  app.addHook("preHandler", async (req, reply) => {
+    if (!req.url.startsWith("/main/") || fail.mode === "none") return;
+    const mode = fail.mode;
+    if (fail.remaining !== null && --fail.remaining <= 0) fail = { mode: "none", remaining: null };
+    if (mode === "timeout") {
+      await new Promise((resolve) => setTimeout(resolve, hangMs));
+      return reply.code(504).send({ error: "simulated timeout" });
+    }
+    return reply.code(503).send({ error: "simulated failure" });
+  });
 
   app.get("/healthz", async () => ({ status: "ok", service: "mock-main" }));
 
@@ -67,6 +131,68 @@ export function buildMockMain(options: MockMainOptions = {}) {
   app.get("/main/stock", async () => ({
     items: state.products.flatMap((p) => p.variants.map((v) => ({ sku: v.sku, qty: v.qty }))),
   }));
+
+  // IF-03: decisive stock check at checkout. Does not reserve anything.
+  app.post("/main/stock-check", async (req, reply) => {
+    const parsed = stockCheckSchema.safeParse(req.body);
+    if (!parsed.success) return reply.code(400).send({ error: "invalid stock-check request" });
+    const requested = new Map<string, number>();
+    for (const { sku, qty } of parsed.data.lines) {
+      requested.set(sku, (requested.get(sku) ?? 0) + qty);
+    }
+    const shortages = [...requested]
+      .map(([sku, qty]) => ({ sku, requested: qty, available: variantsBySku.get(sku)?.qty ?? 0 }))
+      .filter((s) => s.available < s.requested);
+    return { ok: shortages.length === 0, shortages };
+  });
+
+  // IF-04: receive an order. Idempotent on the website's order id: a repeat returns the same
+  // mainOrderId and changes nothing. A new order takes its quantities out of stock.
+  app.post("/main/orders", async (req, reply) => {
+    const parsed = orderSchema.safeParse(req.body);
+    if (!parsed.success) return reply.code(400).send({ error: "invalid order payload" });
+    const payload = parsed.data;
+
+    const existing = orders.get(payload.id);
+    if (existing) {
+      existing.deliveries++;
+      return reply.code(200).send({ mainOrderId: existing.mainOrderId, duplicate: true });
+    }
+
+    const mainOrderId = `MO-${String(orders.size + 1).padStart(6, "0")}`;
+    orders.set(payload.id, {
+      mainOrderId,
+      status: "RECEIVED",
+      trackingNumber: null,
+      receivedAt: new Date().toISOString(),
+      deliveries: 1,
+      payload,
+    });
+    for (const item of payload.items) {
+      const variant = variantsBySku.get(item.sku);
+      if (variant) variant.qty = Math.max(0, variant.qty - item.quantity);
+    }
+    return reply.code(201).send({ mainOrderId, duplicate: false });
+  });
+
+  // --- Test and demo helpers ---
+
+  app.get("/sim/orders", async () => ({
+    orders: [...orders.values()].sort((a, b) => b.receivedAt.localeCompare(a.receivedAt)),
+  }));
+
+  app.get("/sim/fail-mode", async () => fail);
+
+  app.post("/sim/fail-mode", async (req, reply) => {
+    const parsed = failModeSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return reply.code(400).send({ error: 'mode must be "none", "error" or "timeout"' });
+    }
+    const { mode, count } = parsed.data;
+    fail = { mode, remaining: mode === "none" ? null : (count ?? null) };
+    app.log.warn(`fail-mode set to ${mode}${count ? ` for ${count} request(s)` : ""}`);
+    return fail;
+  });
 
   app.get<{ Params: { file: string } }>("/images/:file", async (req, reply) => {
     const match = /^(P\d{3})-(\d)\.svg$/.exec(req.params.file);

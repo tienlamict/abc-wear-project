@@ -7,9 +7,11 @@ import { LogoutButton } from "./account/LogoutButton";
 export function SiteHeader({
   categories,
   memberName,
+  cartCount,
 }: {
   categories: CategoryNode[];
   memberName: string | null;
+  cartCount: number;
 }) {
   return (
     <header className="relative border-b bg-white">
@@ -65,7 +67,7 @@ export function SiteHeader({
             </Link>
           )}
           <Link href="/gio-hang" className="hover:underline">
-            Giỏ hàng (<span data-testid="cart-count">0</span>)
+            Giỏ hàng (<span data-testid="cart-count">{cartCount}</span>)
           </Link>
         </nav>
       </div>

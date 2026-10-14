@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { createMainSystemClient, syncCatalog, syncStock } from "@/modules/integration";
+import { sendPendingOrders } from "@/modules/order";
 import { loadConfigOrExit } from "./env";
 
 const SECOND = 1000;
@@ -7,9 +8,13 @@ const MINUTE = 60 * SECOND;
 
 /**
  * Wraps a job so failures are logged, not thrown, and a run never overlaps the previous one.
- * Resolves to whether the run succeeded.
+ * Resolves to whether the run succeeded. `quiet` skips the log line for uneventful runs.
  */
-function job(name: string, run: () => Promise<unknown>): () => Promise<boolean> {
+function job<T>(
+  name: string,
+  run: () => Promise<T>,
+  quiet: (result: T) => boolean = () => false,
+): () => Promise<boolean> {
   let running = false;
   return async () => {
     if (running) return false;
@@ -17,7 +22,8 @@ function job(name: string, run: () => Promise<unknown>): () => Promise<boolean> 
     const started = Date.now();
     try {
       const result = await run();
-      console.log(`[worker] ${name}: ${JSON.stringify(result)} (${Date.now() - started}ms)`);
+      if (!quiet(result))
+        console.log(`[worker] ${name}: ${JSON.stringify(result)} (${Date.now() - started}ms)`);
       return true;
     } catch (err) {
       console.error(`[worker] ${name} failed:`, err instanceof Error ? err.message : err);
@@ -35,6 +41,11 @@ async function main(): Promise<void> {
 
   const catalog = job("IF-01 catalog", () => syncCatalog(client));
   const stock = job("IF-02 stock", () => syncStock(client));
+  const orders = job(
+    "IF-04 send orders",
+    () => sendPendingOrders(client),
+    (r) => r.sent + r.retrying + r.gaveUp === 0,
+  );
 
   // Main System may come up after the worker (e.g. `pnpm dev`): retry the first catalog sync
   // every 15 seconds instead of waiting for the 10-minute cycle, then load stock right away.
@@ -48,7 +59,7 @@ async function main(): Promise<void> {
   const timers = [
     setInterval(() => void catalog(), 10 * MINUTE),
     setInterval(() => void stock(), MINUTE),
-    // IF-04 (send pending orders, every 5 seconds) is added in M4.
+    setInterval(() => void orders(), 5 * SECOND),
   ];
 
   for (const signal of ["SIGINT", "SIGTERM"] as const) {

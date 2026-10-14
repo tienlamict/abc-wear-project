@@ -1,18 +1,28 @@
 "use client";
 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { ProductVariantInfo } from "@/modules/catalog/queries";
 import { PriceTag } from "./PriceTag";
 import { StockBadge } from "./StockBadge";
+import { callApi } from "./form";
+
+const MAX_LINE_QTY = 10; // QT7
 
 function initialVariant(variants: ProductVariantInfo[]): ProductVariantInfo | undefined {
   return variants.find((v) => v.purchasable) ?? variants[0];
 }
 
-/** PS-04: pick color then size; shows price and stock of the chosen variant. */
+type Notice = { ok: boolean; message: string } | null;
+
+/** PS-04 + OD-01: pick color, size and quantity; shows price and stock; adds to the cart. */
 export function VariantPicker({ variants }: { variants: ProductVariantInfo[] }) {
+  const router = useRouter();
   const [selected, setSelected] = useState(() => initialVariant(variants));
-  const [notice, setNotice] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState(1);
+  const [pending, setPending] = useState(false);
+  const [notice, setNotice] = useState<Notice>(null);
 
   if (!selected) return <p className="text-sm text-gray-600">Sản phẩm chưa có phiên bản để bán.</p>;
 
@@ -29,6 +39,19 @@ export function VariantPicker({ variants }: { variants: ProductVariantInfo[] }) 
   const chooseSize = (variant: ProductVariantInfo) => {
     setSelected(variant);
     setNotice(null);
+  };
+
+  const addToCart = async () => {
+    setPending(true);
+    setNotice(null);
+    const result = await callApi("/api/cart/items", { sku: selected.sku, quantity });
+    setPending(false);
+    if (result.ok) {
+      setNotice({ ok: true, message: `Đã thêm ${quantity} sản phẩm vào giỏ hàng.` });
+      router.refresh(); // header badge
+    } else {
+      setNotice({ ok: false, message: result.error.message });
+    }
   };
 
   const option = (active: boolean) =>
@@ -85,22 +108,50 @@ export function VariantPicker({ variants }: { variants: ProductVariantInfo[] }) 
       </div>
 
       <div>
-        <button
-          type="button"
-          disabled={!selected.purchasable}
-          onClick={() => setNotice("Giỏ hàng đang được hoàn thiện, bạn vui lòng quay lại sau.")}
-          className="w-full rounded bg-gray-900 px-6 py-3 font-medium text-white hover:bg-gray-700 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600 sm:w-auto"
-        >
-          Thêm vào giỏ
-        </button>
+        <div className="flex flex-wrap items-end gap-3">
+          <label className="text-sm font-semibold">
+            Số lượng
+            <select
+              value={quantity}
+              onChange={(e) => {
+                setQuantity(Number(e.target.value));
+                setNotice(null);
+              }}
+              disabled={!selected.purchasable}
+              className="mt-1 block rounded border border-gray-300 px-3 py-2.5 font-normal"
+            >
+              {Array.from({ length: MAX_LINE_QTY }, (_, i) => i + 1).map((n) => (
+                <option key={n} value={n}>
+                  {n}
+                </option>
+              ))}
+            </select>
+          </label>
+          <button
+            type="button"
+            disabled={!selected.purchasable || pending}
+            onClick={addToCart}
+            className="flex-1 rounded bg-gray-900 px-6 py-3 font-medium text-white hover:bg-gray-700 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600 sm:flex-none"
+          >
+            {pending ? "Đang thêm…" : "Thêm vào giỏ"}
+          </button>
+        </div>
         {!selected.purchasable && (
           <p className="mt-2 text-sm text-gray-600">
             Phiên bản này tạm hết hàng. Vui lòng chọn màu hoặc kích cỡ khác.
           </p>
         )}
-        {notice && (
-          <p role="status" className="mt-2 text-sm text-gray-700">
-            {notice}
+        {notice?.ok && (
+          <p role="status" className="mt-2 text-sm text-emerald-700">
+            {notice.message}{" "}
+            <Link href="/gio-hang" className="font-medium underline">
+              Xem giỏ hàng
+            </Link>
+          </p>
+        )}
+        {notice && !notice.ok && (
+          <p role="alert" className="mt-2 text-sm text-red-600">
+            {notice.message}
           </p>
         )}
       </div>

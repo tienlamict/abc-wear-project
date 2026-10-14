@@ -6,4 +6,10 @@ export {
 } from "./client";
 export { type CatalogSyncResult, type StockSyncResult, syncCatalog, syncStock } from "./sync";
 export { type SyncLogEntry, writeSyncLog } from "./sync-log";
-export type { CatalogSnapshot, StockItem } from "./types";
+export type {
+  CatalogSnapshot,
+  MainOrderPayload,
+  StockCheckResult,
+  StockItem,
+  StockLine,
+} from "./types";

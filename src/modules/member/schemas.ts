@@ -1,42 +1,15 @@
 import { z } from "zod";
-
-export const emailSchema = z
-  .string({ error: "Vui lòng nhập email" })
-  .trim()
-  .toLowerCase()
-  .min(1, "Vui lòng nhập email")
-  .max(191, "Email quá dài")
-  .pipe(z.email("Email không hợp lệ"));
+import {
+  emailSchema,
+  fullNameSchema,
+  optionalPhoneSchema as phoneSchema,
+  optionalText,
+} from "@/lib/validation";
 
 export const newPasswordSchema = z
   .string({ error: "Vui lòng nhập mật khẩu" })
   .min(8, "Mật khẩu cần ít nhất 8 ký tự")
   .max(72, "Mật khẩu tối đa 72 ký tự");
-
-const fullNameSchema = z
-  .string({ error: "Vui lòng nhập họ tên" })
-  .trim()
-  .min(1, "Vui lòng nhập họ tên")
-  .max(191, "Họ tên quá dài");
-
-/** Empty or missing → null. */
-const optionalText = (max: number, label: string) =>
-  z
-    .string()
-    .trim()
-    .max(max, `${label} quá dài`)
-    .nullish()
-    .transform((v) => (v ? v : null));
-
-/** Vietnamese mobile/landline: 10 digits starting with 0, or +84 followed by 9 digits. */
-export const phoneSchema = z
-  .string()
-  .nullish()
-  .transform((v) => (v ?? "").replace(/[\s.-]/g, ""))
-  .refine((v) => v === "" || /^(0|\+84)\d{9}$/.test(v), {
-    error: "Số điện thoại không hợp lệ (10 số, bắt đầu bằng 0)",
-  })
-  .transform((v) => (v === "" ? null : v));
 
 export const registerSchema = z.object({
   email: emailSchema,
