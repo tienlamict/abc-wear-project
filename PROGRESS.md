@@ -21,14 +21,14 @@
 - [x] 6. `syncCatalog()`, `syncStock()`; worker theo chu kỳ; `pnpm sync`
 - [x] 7. Test integration `syncCatalog()` với mock thật
 
-## M2 — Tìm kiếm và duyệt sản phẩm (PS-01 → PS-04)
+## M2 — Tìm kiếm và duyệt sản phẩm (PS-01 → PS-04) ✅
 
-- [ ] 1. `src/modules/catalog`: `getCategoryTree()`, `listProducts()`, `getProduct()`
-- [ ] 2. Route `/api/categories`, `/api/products`, `/api/products/[id]`
-- [ ] 3. Layout chung: header, menu danh mục, responsive
-- [ ] 4. Trang `/`, `/danh-muc/[slug]`, `/tim-kiem`, `/san-pham/[id]` (SSR, bộ lọc theo query string)
-- [ ] 5. Component `ProductCard`, `FilterPanel`, `SortSelect`, `Pagination`, `PriceTag`, `VariantPicker`, `StockBadge`
-- [ ] 6. Playwright (Chromium); E2E PS-01 → PS-04
+- [x] 1. `src/modules/catalog`: `getCategoryTree()`, `listProducts()`, `getProduct()`
+- [x] 2. Route `/api/categories`, `/api/products`, `/api/products/[id]`
+- [x] 3. Layout chung: header, menu danh mục, responsive
+- [x] 4. Trang `/`, `/danh-muc/[slug]`, `/tim-kiem`, `/san-pham/[id]` (SSR, bộ lọc theo query string)
+- [x] 5. Component `ProductCard`, `FilterPanel`, `SortSelect`, `Pagination`, `PriceTag`, `VariantPicker`, `StockBadge`
+- [x] 6. Playwright (Chromium); E2E PS-01 → PS-04
 
 ## M3 — Thành viên (MA-01 → MA-04)
 

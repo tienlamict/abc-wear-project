@@ -1,15 +1,31 @@
 import type { Metadata } from "next";
+import { SiteHeader } from "@/components/SiteHeader";
+import { getCategoryTree } from "@/modules/catalog";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "ABC Wear",
+  title: { default: "ABC Wear", template: "%s · ABC Wear" },
   description: "Cửa hàng thời trang ABC Wear — giao hàng toàn quốc, thanh toán khi nhận hàng.",
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+// Every page reads live data from the Selling DB (stock changes every minute).
+export const dynamic = "force-dynamic";
+
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const categories = await getCategoryTree().catch((err: unknown) => {
+    console.error("[web] failed to load categories", err);
+    return [];
+  });
+
   return (
     <html lang="vi">
-      <body className="min-h-screen bg-white text-gray-900 antialiased">{children}</body>
+      <body className="flex min-h-screen flex-col bg-white text-gray-900 antialiased">
+        <SiteHeader categories={categories} />
+        <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6">{children}</main>
+        <footer className="border-t py-6 text-center text-sm text-gray-500">
+          ABC Wear · Giao hàng toàn quốc · Thanh toán khi nhận hàng (COD)
+        </footer>
+      </body>
     </html>
   );
 }

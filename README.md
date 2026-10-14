@@ -31,6 +31,9 @@ Mỗi lần gọi Main System ghi một dòng vào bảng `sync_log`.
 | `worker`   | —                             | Đồng bộ với Main System, gửi đơn (`worker/index.ts`)                    |
 | `mock`     | http://localhost:4100/healthz | Mock Main System (`mock-main/`): `GET /main/catalog`, `GET /main/stock` |
 
+Trang đã có: `/` (trang chủ), `/danh-muc/[slug]` (danh mục, lọc, sắp xếp), `/tim-kiem?q=` (tìm không dấu),
+`/san-pham/[id]` (chi tiết, tồn kho theo size/màu). API: `GET /api/categories`, `GET /api/products`, `GET /api/products/[id]`.
+
 Dịch vụ trong Docker:
 
 | Dịch vụ   | Địa chỉ                                                |
@@ -50,9 +53,14 @@ Kiểm tra container đã healthy: `docker compose ps`.
 | `pnpm sync`       | Đồng bộ một lần IF-01 + IF-02 từ Main System (mock phải đang chạy) |
 | `pnpm mock:seed`  | Sinh lại `mock-main/seed.json` (tất định: 6 danh mục, 40 sản phẩm) |
 | `pnpm test`       | Unit + integration test (Vitest); integration cần MySQL đang chạy  |
+| `pnpm test:e2e`   | E2E (Playwright, Chrome); tự chạy `pnpm dev` nếu chưa chạy         |
 | `pnpm lint`       | ESLint                                                             |
 | `pnpm typecheck`  | TypeScript `tsc --noEmit`                                          |
 | `pnpm format`     | Prettier                                                           |
+
+E2E (`tests/e2e/`) cần Docker đang chạy và Google Chrome trên máy (không cần tải trình duyệt).
+Dùng Chromium của Playwright: `pnpm exec playwright install chromium` rồi đặt `PW_CHANNEL=chromium`;
+dùng Edge: `PW_CHANNEL=msedge`. Báo cáo HTML: `pnpm exec playwright show-report`.
 
 Test integration (`tests/integration/`) chạy trên DB riêng `selling_test`, tự tạo và migrate khi chạy test;
 đổi bằng biến `TEST_DATABASE_URL`. Chỉ chạy unit: `pnpm vitest run --project unit`.
