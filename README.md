@@ -9,6 +9,7 @@ Website bán quần áo ABC Wear: Next.js 14 full-stack + MySQL 8.4, kết nối
 - Node.js ≥ 20.12 (khuyến nghị 22)
 - pnpm 9 (`corepack enable pnpm` hoặc `npm i -g pnpm@9`)
 - Docker (Docker Desktop trên Windows/macOS)
+- Windows: clone vào thư mục có đường dẫn ngắn (ví dụ `D:\code\abc-wear`); đường dẫn quá dài làm Prisma Client không nạp được
 - Google Chrome — chỉ để chạy E2E (Playwright dùng Chrome có sẵn, không tải trình duyệt)
 
 ## Cài đặt và chạy (khoảng 5 phút)
