@@ -23,6 +23,7 @@
     "format": "prettier --write .",
     "mock:seed": "tsx mock-main/generate-seed.ts",
     "sync": "tsx worker/sync.ts",
+    "postinstall": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
     "db:seed": "tsx prisma/seed.ts"
