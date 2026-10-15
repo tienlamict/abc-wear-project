@@ -2,7 +2,7 @@ import { OrderStatus } from "@prisma/client";
 import { z } from "zod";
 import { getConfig } from "@/lib/config";
 import { prisma } from "@/lib/db";
-import { sendEmail } from "@/lib/email";
+import { sendEmailInBackground } from "@/lib/email";
 import { AppError } from "@/lib/errors";
 import { transition } from "@/lib/order-state";
 import { writeSyncLog } from "@/modules/integration";
@@ -73,20 +73,16 @@ export async function applyStatusUpdate(input: unknown, attempt = 1): Promise<St
   console.log(`[order] ${order.code} ${order.status} → ${t.status}`);
 
   if (t.status === "SHIPPING" || t.status === "DELIVERED") {
-    try {
-      const lookup = new URL("/tra-cuu-don", getConfig().WEB_BASE_URL);
-      lookup.searchParams.set("code", order.code);
-      const lookupUrl = lookup.toString();
-      await sendEmail(
-        orderStatusEmail(
-          { ...order, trackingNumber: trackingNumber ?? order.trackingNumber },
-          t.status,
-          lookupUrl,
-        ),
-      );
-    } catch (err) {
-      console.error(`[order] ${t.status} email failed for ${order.code}:`, err);
-    }
+    const lookup = new URL("/tra-cuu-don", getConfig().WEB_BASE_URL);
+    lookup.searchParams.set("code", order.code);
+    sendEmailInBackground(
+      orderStatusEmail(
+        { ...order, trackingNumber: trackingNumber ?? order.trackingNumber },
+        t.status,
+        lookup.toString(),
+      ),
+      `${t.status} ${order.code}`,
+    );
   }
   return { result: "changed", code: order.code, status: t.status };
 }

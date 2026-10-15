@@ -13,15 +13,19 @@
     "dev:mock": "tsx watch mock-main/server.ts",
     "build": "next build",
     "start": "next start -p 3000",
+    "start:cluster": "node scripts/web-cluster.mjs",
+    "start:all": "concurrently -k -n web,worker,mock -c blue,green,magenta \"pnpm:start:cluster\" \"tsx worker/index.ts\" \"tsx mock-main/server.ts\"",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "test:load": "docker run --rm -i -e BASE_URL=http://host.docker.internal:3000 grafana/k6:1.0.0 run - < tests/load/k6.js",
     "lint": "eslint . --max-warnings 0",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "mock:seed": "tsx mock-main/generate-seed.ts",
     "sync": "tsx worker/sync.ts",
     "db:migrate": "prisma migrate dev",
-    "db:deploy": "prisma migrate deploy"
+    "db:deploy": "prisma migrate deploy",
+    "db:seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "6.19.3",

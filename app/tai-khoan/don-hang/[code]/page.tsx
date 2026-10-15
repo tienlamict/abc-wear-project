@@ -23,6 +23,7 @@ export default async function MemberOrderPage({ params }: { params: { code: stri
       >
         ‹ Tất cả đơn hàng
       </Link>
+      <h1 className="mb-4 text-2xl font-bold">Chi tiết đơn hàng</h1>
       <OrderDetailView order={order} />
     </div>
   );

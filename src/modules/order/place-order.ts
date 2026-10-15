@@ -3,7 +3,7 @@ import { z } from "zod";
 import type { CartOwner } from "@/lib/cart-session";
 import { getConfig } from "@/lib/config";
 import { prisma } from "@/lib/db";
-import { sendEmail } from "@/lib/email";
+import { sendEmailInBackground } from "@/lib/email";
 import { AppError } from "@/lib/errors";
 import { generateOrderCode } from "@/lib/order-code";
 import { emailSchema, fullNameSchema, requiredPhoneSchema, requiredText } from "@/lib/validation";
@@ -176,27 +176,24 @@ export async function placeOrder(params: PlaceOrderParams): Promise<PlaceOrderRe
     `[order] placed ${created.code} member=${params.memberId ?? "guest"} items=${cart.itemCount} cod=${codAmount}`,
   );
 
-  try {
-    const lookup = new URL("/tra-cuu-don", getConfig().WEB_BASE_URL);
-    lookup.searchParams.set("code", created.code);
-    const lookupUrl = lookup.toString();
-    await sendEmail(
-      orderConfirmationEmail(
-        {
-          code: created.code,
-          ...data,
-          shippingMethodName: method.name,
-          shippingFee: method.fee,
-          itemsTotal,
-          codAmount,
-          items: cart.lines,
-        },
-        lookupUrl,
-      ),
-    );
-  } catch (err) {
-    console.error(`[order] confirmation email failed for ${created.code}:`, err);
-  }
+  // OD-04: the customer gets the code on screen now; the email follows without delaying it.
+  const lookup = new URL("/tra-cuu-don", getConfig().WEB_BASE_URL);
+  lookup.searchParams.set("code", created.code);
+  sendEmailInBackground(
+    orderConfirmationEmail(
+      {
+        code: created.code,
+        ...data,
+        shippingMethodName: method.name,
+        shippingFee: method.fee,
+        itemsTotal,
+        codAmount,
+        items: cart.lines,
+      },
+      lookup.toString(),
+    ),
+    `order confirmation ${created.code}`,
+  );
 
   return { code: created.code, codAmount, created: true };
 }

@@ -47,6 +47,8 @@ model ProductVariant {
 
   @@index([productId])
   @@index([price])
+  @@index([productId, price]) // listProducts: MIN/MAX(price) per product from the index alone
+  @@index([size, price]) // listProducts: size + price filters as a range scan
   @@map("product_variant")
 }
 

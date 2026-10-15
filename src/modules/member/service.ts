@@ -1,11 +1,11 @@
 import { createHash } from "node:crypto";
 import { Prisma } from "@prisma/client";
-import bcrypt from "bcryptjs";
 import { type MemberProfile, memberProfileSelect } from "@/lib/auth";
 import { getConfig } from "@/lib/config";
 import { prisma } from "@/lib/db";
-import { sendEmail } from "@/lib/email";
+import { sendEmailInBackground } from "@/lib/email";
 import { AppError } from "@/lib/errors";
+import { hashPassword, verifyPassword } from "@/lib/password";
 import { RESET_TOKEN_TTL_S, signToken, verifyToken } from "@/lib/tokens";
 import { passwordResetEmail } from "./emails";
 import {
@@ -17,15 +17,14 @@ import {
   resetPasswordSchema,
 } from "./schemas";
 
-const BCRYPT_ROUNDS = 10;
 export const MAX_FAILED_LOGINS = 5;
 export const LOCK_MINUTES = 15;
 
 const INVALID_CREDENTIALS = "Email hoặc mật khẩu không đúng. Vui lòng kiểm tra lại.";
 
-// Compared against when the email is unknown, so both paths cost one bcrypt check.
-let dummyHash: string | undefined;
-const getDummyHash = () => (dummyHash ??= bcrypt.hashSync("not-a-real-password", BCRYPT_ROUNDS));
+// Compared against when the email is unknown, so both paths cost one bcrypt check
+// (cost-10 hash of a random string nobody knows).
+const DUMMY_HASH = "$2b$10$Nd0Y9khfIvhjSkLlZ9TUaOoRm6ifhTXFQc8/VpJlxxXgCfaMA9Zs6";
 
 function lockedError(lockedUntil: Date, now: Date): AppError {
   const minutes = Math.max(1, Math.ceil((lockedUntil.getTime() - now.getTime()) / 60_000));
@@ -48,7 +47,7 @@ export async function register(input: unknown): Promise<MemberProfile> {
     const member = await prisma.member.create({
       data: {
         email: data.email,
-        passwordHash: await bcrypt.hash(data.password, BCRYPT_ROUNDS),
+        passwordHash: await hashPassword(data.password),
         fullName: data.fullName,
         phone: data.phone ?? null,
       },
@@ -68,7 +67,7 @@ export async function login(input: unknown, now: Date = new Date()): Promise<Mem
   const member = await prisma.member.findUnique({ where: { email } });
 
   if (!member) {
-    await bcrypt.compare(password, getDummyHash());
+    await verifyPassword(password, DUMMY_HASH);
     console.log("[auth] login failed: unknown email");
     throw new AppError("UNAUTHORIZED", INVALID_CREDENTIALS);
   }
@@ -77,7 +76,7 @@ export async function login(input: unknown, now: Date = new Date()): Promise<Mem
     throw lockedError(member.lockedUntil, now);
   }
 
-  if (!(await bcrypt.compare(password, member.passwordHash))) {
+  if (!(await verifyPassword(password, member.passwordHash))) {
     // Atomic increment so parallel attempts are all counted.
     const { failedLogins } = await prisma.member.update({
       where: { id: member.id },
@@ -140,14 +139,14 @@ export async function changePassword(memberId: string, input: unknown): Promise<
   const { currentPassword, newPassword } = changePasswordSchema.parse(input);
   const member = await prisma.member.findUnique({ where: { id: memberId } });
   if (!member) throw new AppError("UNAUTHORIZED");
-  if (!(await bcrypt.compare(currentPassword, member.passwordHash))) {
+  if (!(await verifyPassword(currentPassword, member.passwordHash))) {
     throw new AppError("VALIDATION_ERROR", "Mật khẩu hiện tại không đúng.", {
       fields: { currentPassword: "Mật khẩu hiện tại không đúng" },
     });
   }
   await prisma.member.update({
     where: { id: memberId },
-    data: { passwordHash: await bcrypt.hash(newPassword, BCRYPT_ROUNDS) },
+    data: { passwordHash: await hashPassword(newPassword) },
   });
   console.log(`[auth] password changed: member=${memberId}`);
 }
@@ -180,12 +179,11 @@ export async function requestPasswordReset(input: unknown): Promise<void> {
   const token = await createPasswordResetToken(member);
   const url = new URL("/dat-lai-mat-khau", getConfig().WEB_BASE_URL);
   url.searchParams.set("token", token);
-  try {
-    await sendEmail(passwordResetEmail(member.email, member.fullName, url.toString()));
-    console.log(`[auth] password reset email sent: member=${member.id}`);
-  } catch (err) {
-    console.error(`[auth] password reset email failed: member=${member.id}`, err);
-  }
+  // Not awaited: the reply takes as long whether or not the email is registered.
+  sendEmailInBackground(
+    passwordResetEmail(member.email, member.fullName, url.toString()),
+    `password reset, member=${member.id}`,
+  );
 }
 
 /** MA-03: sets a new password from an emailed token; also lifts a login lock. */
@@ -199,7 +197,7 @@ export async function resetPassword(input: unknown): Promise<void> {
   await prisma.member.update({
     where: { id: member.id },
     data: {
-      passwordHash: await bcrypt.hash(password, BCRYPT_ROUNDS),
+      passwordHash: await hashPassword(password),
       failedLogins: 0,
       lockedUntil: null,
     },

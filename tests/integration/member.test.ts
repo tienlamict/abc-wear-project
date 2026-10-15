@@ -23,6 +23,9 @@ vi.mock("@/lib/email", async (importOriginal) => ({
   sendEmail: vi.fn(async (message: EmailMessage) => {
     sent.push(message);
   }),
+  sendEmailInBackground: vi.fn((message: EmailMessage) => {
+    sent.push(message);
+  }),
 }));
 
 const PASSWORD = "matkhau123";

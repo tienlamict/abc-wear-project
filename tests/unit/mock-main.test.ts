@@ -62,3 +62,19 @@ describe("mock-main", () => {
     expect(missing.statusCode).toBe(404);
   });
 });
+
+describe("mock-main imageBaseUrl", () => {
+  it("builds image URLs from the configured base instead of the request host", async () => {
+    const app = buildMockMain({ imageBaseUrl: "http://localhost:4100/" });
+    try {
+      const res = await app.inject({
+        method: "GET",
+        url: "/main/catalog",
+        headers: { host: "127.0.0.1:5555" },
+      });
+      expect(res.json().products[0].images[0]).toBe("http://localhost:4100/images/P001-1.svg");
+    } finally {
+      await app.close();
+    }
+  });
+});

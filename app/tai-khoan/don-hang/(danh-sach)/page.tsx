@@ -22,14 +22,17 @@ export default async function MyOrdersPage({
 
   if (orders.total === 0) {
     return (
-      <div className="rounded-lg border border-dashed p-10 text-center">
-        <p className="font-medium">Bạn chưa có đơn hàng nào.</p>
-        <Link
-          href="/"
-          className="mt-4 inline-block rounded bg-gray-900 px-4 py-2 text-sm font-medium text-white"
-        >
-          Bắt đầu mua sắm
-        </Link>
+      <div>
+        <h1 className="mb-4 text-2xl font-bold">Đơn hàng của tôi</h1>
+        <div className="rounded-lg border border-dashed p-10 text-center">
+          <p className="font-medium">Bạn chưa có đơn hàng nào.</p>
+          <Link
+            href="/"
+            className="mt-4 inline-block rounded bg-gray-900 px-4 py-2 text-sm font-medium text-white"
+          >
+            Bắt đầu mua sắm
+          </Link>
+        </div>
       </div>
     );
   }

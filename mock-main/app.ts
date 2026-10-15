@@ -13,6 +13,8 @@ export interface MockMainOptions {
   webhookUrl?: string;
   /** Sent as the `x-main-secret` header with every webhook call. */
   webhookSecret?: string;
+  /** Base of image URLs in the catalog; default: the host the request came to. */
+  imageBaseUrl?: string;
 }
 
 /** Main's order lifecycle after it receives an order; RECEIVED = the web's SENT_TO_MAIN. */
@@ -123,7 +125,8 @@ export function buildMockMain(options: MockMainOptions = {}) {
   const NO_FAILURE: FailState = { mode: "none", remaining: null, only: null };
   let fail: FailState = NO_FAILURE;
 
-  const baseUrl = (req: FastifyRequest) => `${req.protocol}://${req.host}`;
+  const baseUrl = (req: FastifyRequest) =>
+    options.imageBaseUrl?.replace(/\/+$/, "") ?? `${req.protocol}://${req.host}`;
 
   // Simulated outages apply to the website-facing API only (/main/*).
   app.addHook("preHandler", async (req, reply) => {

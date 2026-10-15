@@ -60,11 +60,11 @@
 - [x] 5. Trang `/tai-khoan/don-hang`, `/tai-khoan/don-hang/[code]`, `/tra-cuu-don`
 - [x] 6. E2E OD-05, OD-06, IN-01, IN-02
 
-## M6 — Phi chức năng và bàn giao
+## M6 — Phi chức năng và bàn giao (bàn giao; k6 chưa đạt `max<2000` trên laptop — xem tests/load/result.md)
 
-- [ ] 1. `EXPLAIN` truy vấn `listProducts`, thêm chỉ mục nếu cần
-- [ ] 2. `/api/healthz`; rà tiến trình web không giữ trạng thái
-- [ ] 3. `tests/load/k6.js` (100 VU, 2 phút); `tests/load/result.md`
-- [ ] 4. Rà giao diện: lỗi tiếng Việt, trạng thái tải/rỗng/lỗi, 375px
-- [ ] 5. README hoàn chỉnh (multi-instance, kịch bản demo, bảng truy vết)
-- [ ] 6. Chạy lại toàn bộ test; cập nhật `DECISIONS.md`, `PROGRESS.md`
+- [x] 1. `EXPLAIN` truy vấn `listProducts`, thêm chỉ mục nếu cần
+- [x] 2. `/api/healthz`; rà tiến trình web không giữ trạng thái
+- [x] 3. `tests/load/k6.js` (100 VU, 2 phút); `tests/load/result.md` — 0% lỗi, p99 1,90 s, **max 3,75 s > 2 s** (máy đo bão hòa CPU)
+- [x] 4. Rà giao diện: lỗi tiếng Việt, trạng thái tải/rỗng/lỗi, 375px
+- [x] 5. README hoàn chỉnh (multi-instance, kịch bản demo, bảng truy vết)
+- [x] 6. Chạy lại toàn bộ test; cập nhật `DECISIONS.md`, `PROGRESS.md`

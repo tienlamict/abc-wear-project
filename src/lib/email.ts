@@ -11,13 +11,26 @@ export interface EmailMessage {
 let transporter: Transporter | undefined;
 
 function getTransporter(): Transporter {
-  transporter ??= nodemailer.createTransport(getConfig().SMTP_URL);
+  // Pooled: reuses SMTP connections instead of a handshake per email.
+  transporter ??= nodemailer.createTransport({ url: getConfig().SMTP_URL, pool: true });
   return transporter;
 }
 
 /** Sends through SMTP_URL (Mailpit in dev). Throws on failure; callers decide whether that matters. */
 export async function sendEmail(message: EmailMessage): Promise<void> {
   await getTransporter().sendMail({ from: getConfig().MAIL_FROM, ...message });
+}
+
+/**
+ * For emails whose failure must not fail the request (order confirmation, status changes,
+ * password reset): the response does not wait for SMTP, errors are logged with `context`.
+ */
+export function sendEmailInBackground(message: EmailMessage, context: string): void {
+  sendEmail(message).then(
+    () => console.log(`[email] sent: ${context}`),
+    (err: unknown) =>
+      console.error(`[email] failed: ${context}:`, err instanceof Error ? err.message : err),
+  );
 }
 
 /** Escapes text for HTML email bodies. */
