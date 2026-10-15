@@ -23,3 +23,22 @@ export function transition(from: OrderStatus, to: OrderStatus): TransitionResult
   if (NEXT[from].includes(to)) return { kind: "changed", status: to };
   return { kind: "invalid", status: from, reason: `cannot move order from ${from} to ${to}` };
 }
+
+/** Customer-facing Vietnamese names of each status. */
+export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
+  CONFIRMED: "Đã xác nhận",
+  SENT_TO_MAIN: "Đã chuyển kho",
+  PICKING: "Đang chuẩn bị hàng",
+  SHIPPING: "Đang giao hàng",
+  DELIVERED: "Đã giao hàng",
+  DELIVERY_FAILED: "Giao không thành công",
+};
+
+/** The normal path in order; DELIVERY_FAILED takes DELIVERED's place when delivery fails. */
+export const ORDER_PROGRESS: readonly OrderStatus[] = [
+  "CONFIRMED",
+  "SENT_TO_MAIN",
+  "PICKING",
+  "SHIPPING",
+  "DELIVERED",
+];

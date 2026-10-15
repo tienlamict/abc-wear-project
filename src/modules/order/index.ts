@@ -15,7 +15,20 @@ export {
   checkoutSchema,
   placeOrder,
 } from "./place-order";
-export { type OrderConfirmation, getOrderConfirmation } from "./queries";
+export {
+  ORDERS_PAGE_SIZE,
+  type MemberOrderPage,
+  type OrderConfirmation,
+  type OrderDetail,
+  type OrderSummary,
+  type TimelineStep,
+  buildTimeline,
+  getMemberOrder,
+  getOrderConfirmation,
+  listMemberOrders,
+  lookupGuestOrder,
+} from "./queries";
+export { type StatusUpdateResult, applyStatusUpdate } from "./status-update";
 export {
   MAX_SEND_ATTEMPTS,
   SEND_BATCH_SIZE,

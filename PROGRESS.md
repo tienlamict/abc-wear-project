@@ -51,14 +51,14 @@
 - [x] 8. Trang `/gio-hang`, `/dat-hang` (3 bước), `/dat-hang/hoan-tat/[code]`
 - [x] 9. Test integration `placeOrder()`, worker gửi lại; E2E OD-01 → OD-04
 
-## M5 — Theo dõi đơn (OD-05, OD-06, IF-05)
+## M5 — Theo dõi đơn (OD-05, OD-06, IF-05) ✅
 
-- [ ] 1. Mock `POST /sim/orders/:mainOrderId/advance`, trang `/sim`, `POST /sim/stock`
-- [ ] 2. Route `POST /api/integration/order-status`; email khi `SHIPPING`, `DELIVERED`
-- [ ] 3. `src/modules/order/queries.ts`: `listMemberOrders()`, `getMemberOrder()`, `lookupGuestOrder()`
-- [ ] 4. Route `/api/orders`, `/api/orders/[code]`, `/api/orders/lookup`
-- [ ] 5. Trang `/tai-khoan/don-hang`, `/tai-khoan/don-hang/[code]`, `/tra-cuu-don`
-- [ ] 6. E2E OD-05, OD-06, IN-01, IN-02
+- [x] 1. Mock `POST /sim/orders/:mainOrderId/advance`, trang `/sim`, `POST /sim/stock`
+- [x] 2. Route `POST /api/integration/order-status`; email khi `SHIPPING`, `DELIVERED`
+- [x] 3. `src/modules/order/queries.ts`: `listMemberOrders()`, `getMemberOrder()`, `lookupGuestOrder()`
+- [x] 4. Route `/api/orders`, `/api/orders/[code]`, `/api/orders/lookup`
+- [x] 5. Trang `/tai-khoan/don-hang`, `/tai-khoan/don-hang/[code]`, `/tra-cuu-don`
+- [x] 6. E2E OD-05, OD-06, IN-01, IN-02
 
 ## M6 — Phi chức năng và bàn giao
 

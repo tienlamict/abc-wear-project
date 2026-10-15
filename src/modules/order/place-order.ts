@@ -177,7 +177,9 @@ export async function placeOrder(params: PlaceOrderParams): Promise<PlaceOrderRe
   );
 
   try {
-    const lookupUrl = new URL("/tra-cuu-don", getConfig().WEB_BASE_URL).toString();
+    const lookup = new URL("/tra-cuu-don", getConfig().WEB_BASE_URL);
+    lookup.searchParams.set("code", created.code);
+    const lookupUrl = lookup.toString();
     await sendEmail(
       orderConfirmationEmail(
         {

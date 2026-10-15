@@ -74,3 +74,46 @@ ${rows}
   );
   return { to: order.customerEmail, subject, text, html };
 }
+
+export interface StatusEmailOrder {
+  code: string;
+  customerName: string;
+  customerEmail: string;
+  codAmount: number;
+  trackingNumber: string | null;
+}
+
+/** IF-05: tells the customer their order is on its way (SHIPPING) or has arrived (DELIVERED). */
+export function orderStatusEmail(
+  order: StatusEmailOrder,
+  status: "SHIPPING" | "DELIVERED",
+  lookupUrl: string,
+): EmailMessage {
+  const shipping = status === "SHIPPING";
+  const subject = shipping
+    ? `Đơn hàng ${order.code} đang được giao`
+    : `Đơn hàng ${order.code} đã giao thành công`;
+  const lines = shipping
+    ? [
+        `Đơn hàng ${order.code} đã được giao cho đơn vị vận chuyển.`,
+        order.trackingNumber ? `Mã vận đơn: ${order.trackingNumber}` : null,
+        `Vui lòng chuẩn bị ${formatVnd(order.codAmount)} để thanh toán khi nhận hàng (COD).`,
+      ]
+    : [`Đơn hàng ${order.code} đã được giao thành công.`, "Cảm ơn bạn đã mua sắm tại ABC Wear!"];
+  const body = lines.filter((l): l is string => l !== null);
+
+  const text = [
+    `Xin chào ${order.customerName},`,
+    "",
+    ...body,
+    "",
+    `Tra cứu đơn hàng: ${lookupUrl} (nhập mã đơn và email ${order.customerEmail})`,
+  ].join("\n");
+  const html = emailLayout(
+    subject,
+    `<p>Xin chào ${escapeHtml(order.customerName)},</p>
+${body.map((l) => `<p>${escapeHtml(l)}</p>`).join("\n")}
+<p><a href="${escapeHtml(lookupUrl)}">Tra cứu đơn hàng</a> bằng mã đơn và email ${escapeHtml(order.customerEmail)}.</p>`,
+  );
+  return { to: order.customerEmail, subject, text, html };
+}

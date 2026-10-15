@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { ChangePasswordForm } from "@/components/account/ChangePasswordForm";
 import { ProfileForm } from "@/components/account/ProfileForm";
-import { getCurrentMemberCached } from "../_lib/auth";
+import { getCurrentMemberCached } from "../../_lib/auth";
 
 export const metadata: Metadata = { title: "Tài khoản" };
 

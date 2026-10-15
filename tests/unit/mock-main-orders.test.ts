@@ -73,7 +73,7 @@ describe("mock-main IF-03 / IF-04 / fail-mode", () => {
     const first = await app.inject({ method: "POST", url: "/main/orders", payload: order() });
     expect(first.statusCode).toBe(201);
     const { mainOrderId } = first.json();
-    expect(mainOrderId).toMatch(/^MO-\d{6}$/);
+    expect(mainOrderId).toMatch(/^MO-[0-9A-Z]+-\d{4}$/);
     expect(await stockOf("P001-DEN-M")).toBe(before - 2);
 
     const again = await app.inject({ method: "POST", url: "/main/orders", payload: order() });
@@ -117,6 +117,7 @@ describe("mock-main IF-03 / IF-04 / fail-mode", () => {
     expect((await app.inject({ method: "GET", url: "/sim/fail-mode" })).json()).toEqual({
       mode: "none",
       remaining: null,
+      only: null,
     });
 
     const bad = await app.inject({ method: "POST", url: "/sim/fail-mode", payload: { mode: "x" } });
@@ -136,5 +137,21 @@ describe("mock-main IF-03 / IF-04 / fail-mode", () => {
     expect(
       (await app.inject({ method: "POST", url: "/main/orders", payload: order() })).statusCode,
     ).toBe(201);
+  });
+});
+
+describe("mock-main order ids", () => {
+  it("stay unique across mock restarts", async () => {
+    const ids: string[] = [];
+    for (let i = 0; i < 2; i++) {
+      const app = buildMockMain();
+      ids.push(
+        (await app.inject({ method: "POST", url: "/main/orders", payload: order() })).json()
+          .mainOrderId,
+      );
+      await app.close();
+      await new Promise((r) => setTimeout(r, 5)); // a later boot
+    }
+    expect(ids[0]).not.toBe(ids[1]);
   });
 });

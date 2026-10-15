@@ -1,6 +1,7 @@
 import Fastify, { type FastifyRequest } from "fastify";
 import { z } from "zod";
 import seedData from "./seed.json";
+import { simPage } from "./sim-page";
 import type { MockOrder, Seed, SeedProduct, SeedVariant } from "./types";
 
 export interface MockMainOptions {
@@ -8,7 +9,19 @@ export interface MockMainOptions {
   seed?: Seed;
   /** How long a request hangs in fail-mode "timeout" (default 10 s, longer than the web's 3 s). */
   hangMs?: number;
+  /** IF-05: where order status changes are pushed (the website's /api/integration/order-status). */
+  webhookUrl?: string;
+  /** Sent as the `x-main-secret` header with every webhook call. */
+  webhookSecret?: string;
 }
+
+/** Main's order lifecycle after it receives an order; RECEIVED = the web's SENT_TO_MAIN. */
+const NEXT_STATUS: Record<string, string | undefined> = {
+  RECEIVED: "PICKING",
+  PICKING: "SHIPPING",
+  SHIPPING: "DELIVERED",
+};
+const NOTIFIABLE = ["PICKING", "SHIPPING", "DELIVERED", "DELIVERY_FAILED"] as const;
 
 export const FAIL_MODES = ["none", "error", "timeout"] as const;
 export type FailMode = (typeof FAIL_MODES)[number];
@@ -50,6 +63,20 @@ const failModeSchema = z.object({
   mode: z.enum(FAIL_MODES),
   /** Fail only the next N requests to /main/*, then go back to "none". */
   count: z.number().int().positive().optional(),
+  /** Only requests whose path starts with this, e.g. "/main/orders" to break IF-04 alone. */
+  only: z.string().startsWith("/main/").optional(),
+});
+
+const advanceSchema = z
+  .object({
+    /** Default: the next status. DELIVERY_FAILED from SHIPPING; the current status re-sends it. */
+    to: z.enum(NOTIFIABLE).optional(),
+  })
+  .optional();
+
+const simStockSchema = z.object({
+  sku: z.string().min(1),
+  qty: z.number().int().min(0),
 });
 
 const SWATCH: Record<string, string> = {
@@ -90,15 +117,20 @@ export function buildMockMain(options: MockMainOptions = {}) {
   );
   const orders = new Map<string, MockOrder>(); // by the website's order id
   const hangMs = options.hangMs ?? 10_000;
-  let fail: { mode: FailMode; remaining: number | null } = { mode: "none", remaining: null };
+  // Ids must stay unique across mock restarts, like a real Main System's (the web keeps old ones).
+  const bootId = Date.now().toString(36).toUpperCase();
+  type FailState = { mode: FailMode; remaining: number | null; only: string | null };
+  const NO_FAILURE: FailState = { mode: "none", remaining: null, only: null };
+  let fail: FailState = NO_FAILURE;
 
   const baseUrl = (req: FastifyRequest) => `${req.protocol}://${req.host}`;
 
   // Simulated outages apply to the website-facing API only (/main/*).
   app.addHook("preHandler", async (req, reply) => {
     if (!req.url.startsWith("/main/") || fail.mode === "none") return;
+    if (fail.only && !req.url.startsWith(fail.only)) return;
     const mode = fail.mode;
-    if (fail.remaining !== null && --fail.remaining <= 0) fail = { mode: "none", remaining: null };
+    if (fail.remaining !== null && --fail.remaining <= 0) fail = NO_FAILURE;
     if (mode === "timeout") {
       await new Promise((resolve) => setTimeout(resolve, hangMs));
       return reply.code(504).send({ error: "simulated timeout" });
@@ -159,7 +191,7 @@ export function buildMockMain(options: MockMainOptions = {}) {
       return reply.code(200).send({ mainOrderId: existing.mainOrderId, duplicate: true });
     }
 
-    const mainOrderId = `MO-${String(orders.size + 1).padStart(6, "0")}`;
+    const mainOrderId = `MO-${bootId}-${String(orders.size + 1).padStart(4, "0")}`;
     orders.set(payload.id, {
       mainOrderId,
       status: "RECEIVED",
@@ -177,9 +209,10 @@ export function buildMockMain(options: MockMainOptions = {}) {
 
   // --- Test and demo helpers ---
 
-  app.get("/sim/orders", async () => ({
-    orders: [...orders.values()].sort((a, b) => b.receivedAt.localeCompare(a.receivedAt)),
-  }));
+  const sortedOrders = () =>
+    [...orders.values()].sort((a, b) => b.receivedAt.localeCompare(a.receivedAt));
+
+  app.get("/sim/orders", async () => ({ orders: sortedOrders() }));
 
   app.get("/sim/fail-mode", async () => fail);
 
@@ -188,11 +221,90 @@ export function buildMockMain(options: MockMainOptions = {}) {
     if (!parsed.success) {
       return reply.code(400).send({ error: 'mode must be "none", "error" or "timeout"' });
     }
-    const { mode, count } = parsed.data;
-    fail = { mode, remaining: mode === "none" ? null : (count ?? null) };
-    app.log.warn(`fail-mode set to ${mode}${count ? ` for ${count} request(s)` : ""}`);
+    const { mode, count, only } = parsed.data;
+    fail = mode === "none" ? NO_FAILURE : { mode, remaining: count ?? null, only: only ?? null };
+    app.log.warn(
+      `fail-mode set to ${mode}${count ? ` for ${count} request(s)` : ""}${only ? ` on ${only}` : ""}`,
+    );
     return fail;
   });
+
+  // IF-05: move an order along and push the new status to the website.
+  app.post<{ Params: { mainOrderId: string } }>(
+    "/sim/orders/:mainOrderId/advance",
+    async (req, reply) => {
+      const order = [...orders.values()].find((o) => o.mainOrderId === req.params.mainOrderId);
+      if (!order) return reply.code(404).send({ error: "order not found" });
+      const parsed = advanceSchema.safeParse(req.body ?? undefined);
+      if (!parsed.success) {
+        return reply.code(400).send({ error: `"to" must be one of ${NOTIFIABLE.join(", ")}` });
+      }
+
+      const requested = parsed.data?.to;
+      const next = NEXT_STATUS[order.status];
+      const allowed =
+        requested === undefined
+          ? next !== undefined
+          : requested === order.status ||
+            requested === next ||
+            (requested === "DELIVERY_FAILED" && order.status === "SHIPPING");
+      if (!allowed) {
+        return reply.code(409).send({
+          error: `cannot move ${order.mainOrderId} from ${order.status} to ${requested ?? "(next)"}`,
+        });
+      }
+
+      order.status = requested ?? next!;
+      if (order.status === "SHIPPING" && !order.trackingNumber) {
+        order.trackingNumber = `VN${Date.now().toString().slice(-8)}${order.mainOrderId.slice(-4)}`;
+      }
+      const webhook = await notifyWebsite(order);
+      return {
+        mainOrderId: order.mainOrderId,
+        status: order.status,
+        trackingNumber: order.trackingNumber,
+        webhook,
+      };
+    },
+  );
+
+  async function notifyWebsite(order: MockOrder) {
+    if (!options.webhookUrl) return { ok: false, error: "no webhook URL configured" };
+    try {
+      const res = await fetch(options.webhookUrl, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "x-main-secret": options.webhookSecret ?? "",
+        },
+        body: JSON.stringify({
+          mainOrderId: order.mainOrderId,
+          status: order.status,
+          trackingNumber: order.trackingNumber ?? undefined,
+        }),
+        signal: AbortSignal.timeout(5000),
+      });
+      const body = await res.json().catch(() => null);
+      return { ok: res.ok, status: res.status, body };
+    } catch (err) {
+      return { ok: false, error: err instanceof Error ? err.message : String(err) };
+    }
+  }
+
+  // Change stock in Main; the website picks it up with the next IF-02 sync (≤ 1 minute).
+  app.post("/sim/stock", async (req, reply) => {
+    const parsed = simStockSchema.safeParse(req.body);
+    if (!parsed.success) return reply.code(400).send({ error: "body must be { sku, qty >= 0 }" });
+    const variant = variantsBySku.get(parsed.data.sku);
+    if (!variant) return reply.code(404).send({ error: "unknown sku" });
+    variant.qty = parsed.data.qty;
+    return { sku: variant.sku, qty: variant.qty };
+  });
+
+  // Demo page: orders received, a button to move each one along, stock and fail-mode controls.
+  app.get("/sim", async (_req, reply) =>
+    reply.type("text/html; charset=utf-8").send(simPage(sortedOrders(), fail)),
+  );
 
   app.get<{ Params: { file: string } }>("/images/:file", async (req, reply) => {
     const match = /^(P\d{3})-(\d)\.svg$/.exec(req.params.file);

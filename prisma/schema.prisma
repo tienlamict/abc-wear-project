@@ -118,6 +118,7 @@ model Order {
 
   @@index([memberId, createdAt])
   @@index([status, nextSendAt])
+  @@index([mainOrderId]) // IF-05 webhook lookup
   @@map("orders")
 }
 

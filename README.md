@@ -33,9 +33,11 @@ Mỗi lần gọi Main System ghi một dòng vào bảng `sync_log`.
 
 Trang đã có: `/` (trang chủ), `/danh-muc/[slug]` (danh mục, lọc, sắp xếp), `/tim-kiem?q=` (tìm không dấu),
 `/san-pham/[id]` (chi tiết, chọn size/màu, thêm giỏ), `/gio-hang`, `/dat-hang` (3 bước, không cần đăng nhập),
-`/dat-hang/hoan-tat/[code]`, `/dang-ky`, `/dang-nhap`, `/quen-mat-khau`, `/dat-lai-mat-khau`, `/tai-khoan`.
+`/dat-hang/hoan-tat/[code]`, `/tra-cuu-don` (mã đơn + email), `/dang-ky`, `/dang-nhap`, `/quen-mat-khau`,
+`/dat-lai-mat-khau`, `/tai-khoan`, `/tai-khoan/don-hang`, `/tai-khoan/don-hang/[code]` (lịch sử, dòng thời gian trạng thái).
 API: `/api/categories`, `/api/products`, `/api/products/[id]`, `/api/auth/*`, `/api/me`, `/api/me/change-password`,
-`/api/cart`, `/api/cart/items`, `/api/cart/items/[sku]`, `/api/shipping-methods`, `POST /api/orders` (header `Idempotency-Key`).
+`/api/cart`, `/api/cart/items`, `/api/cart/items/[sku]`, `/api/shipping-methods`, `POST /api/orders` (header `Idempotency-Key`),
+`GET /api/orders`, `GET /api/orders/[code]`, `POST /api/orders/lookup`, `POST /api/integration/order-status` (IF-05, header `x-main-secret`).
 
 Email (đặt lại mật khẩu, xác nhận đơn) không gửi ra ngoài mà vào Mailpit: mở http://localhost:8025 để xem.
 
@@ -49,7 +51,18 @@ Giả lập Main System lỗi để xem worker gửi lại (`mode`: `error` tr�
 curl -X POST localhost:4100/sim/fail-mode -H 'content-type: application/json' -d '{"mode":"error","count":2}'
 ```
 
-Đơn mock đã nhận: http://localhost:4100/sim/orders.
+Trang demo của mock: http://localhost:4100/sim — danh sách đơn Main đã nhận, nút "Chuyển trạng thái"
+(RECEIVED → PICKING → SHIPPING → DELIVERED, hoặc "Giao thất bại" khi đang giao) gọi webhook IF-05 về website
+(`WEB_BASE_URL` + `/api/integration/order-status`, kèm `MAIN_WEBHOOK_SECRET`), ô đổi tồn kho và nút giả lập sự cố.
+Website gửi email cho khách khi đơn chuyển sang "Đang giao" và "Đã giao". Lệnh tương đương:
+
+```bash
+curl -X POST localhost:4100/sim/orders/<mainOrderId>/advance -H 'content-type: application/json' -d '{}'
+```
+
+```bash
+curl -X POST localhost:4100/sim/stock -H 'content-type: application/json' -d '{"sku":"P001-DEN-M","qty":3}'
+```
 
 Dịch vụ trong Docker:
 

@@ -94,3 +94,56 @@ export async function fillCheckoutDetails(page: Page, email: string) {
   await form.getByLabel("Quận/Huyện").fill(ADDRESS.shipDistrict);
   await form.getByLabel("Tỉnh/Thành phố").fill(ADDRESS.shipProvince);
 }
+
+/** Places an order from the page's current cart through the API (cookies included). */
+export async function placeOrderViaApi(page: Page, email: string): Promise<string> {
+  const res = await page.request.post("/api/orders", {
+    headers: { "idempotency-key": crypto.randomUUID() },
+    data: {
+      ...ADDRESS,
+      customerEmail: email,
+      shippingMethod: "STANDARD",
+    },
+  });
+  expect(res.status(), await res.text()).toBe(201);
+  return (await res.json()).code;
+}
+
+/** Waits until the worker has delivered the order to the mock (IF-04). */
+export async function waitForMainOrder(request: APIRequestContext, code: string, timeout = 15_000) {
+  let order: MockOrder | undefined;
+  await expect
+    .poll(
+      async () => {
+        order = await mockOrderByCode(request, code);
+        return Boolean(order);
+      },
+      { timeout, intervals: [500], message: `order ${code} never reached Main` },
+    )
+    .toBe(true);
+  return order!;
+}
+
+/** Moves the order along in the mock, which pushes IF-05 to the website. */
+export async function advanceInMain(request: APIRequestContext, mainOrderId: string, to?: string) {
+  const res = await request.post(`${MAIN_URL}/sim/orders/${mainOrderId}/advance`, {
+    data: to ? { to } : {},
+  });
+  expect(res.ok(), await res.text()).toBe(true);
+  const body = await res.json();
+  expect(body.webhook.ok, JSON.stringify(body.webhook)).toBe(true);
+  return body as { status: string; trackingNumber: string | null };
+}
+
+export async function setMainStock(request: APIRequestContext, sku: string, qty: number) {
+  const res = await request.post(`${MAIN_URL}/sim/stock`, { data: { sku, qty } });
+  expect(res.ok(), await res.text()).toBe(true);
+}
+
+export async function setFailMode(
+  request: APIRequestContext,
+  body: { mode: "none" | "error" | "timeout"; count?: number; only?: string },
+) {
+  const res = await request.post(`${MAIN_URL}/sim/fail-mode`, { data: body });
+  expect(res.ok(), await res.text()).toBe(true);
+}
