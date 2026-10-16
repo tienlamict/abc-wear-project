@@ -3,6 +3,7 @@
 Website bán quần áo ABC Wear: Next.js 14 full-stack + MySQL 8.4, kết nối Main System qua module `integration`
 (ở đây là mock Main System). Mọi đơn hàng thanh toán khi nhận hàng (COD); khách không cần tài khoản để đặt hàng.
 Đặc tả: [spec.md](spec.md) · Tiến độ: [PROGRESS.md](PROGRESS.md) · Quyết định kỹ thuật: [DECISIONS.md](DECISIONS.md).
+Hướng dẫn chạy và kiểm thử chi tiết (58 ca kiểm thử thủ công, xử lý sự cố): [docs/huong_dan_su_dung.md](docs/huong_dan_su_dung.md).
 
 ## Yêu cầu
 
