@@ -267,3 +267,15 @@ prisma/         schema, migration, seed
 config/         shipping-methods.json (phí giao hàng)
 tests/          unit | integration | e2e | load | fixtures (ảnh mẫu)
 ```
+
+## Kiến trúc tổng quát
+
+```
+Khách hàng ─► Website (Next.js) ─► Selling DB
+                   ▲     │
+          đồng bộ  │     │ gửi đơn, kiểm tồn kho
+                   │     ▼
+              Main System ◄── quản trị viên ABC Wear (/admin)
+                   │
+                   └─► MinIO (ảnh sản phẩm) ──► trình duyệt khách tải ảnh
+```
