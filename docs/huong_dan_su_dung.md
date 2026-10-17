@@ -23,24 +23,30 @@ Tổng quan kỹ thuật xem [README.md](../README.md); đặc tả xem [spec.md
 ## 1. Hệ thống gồm những gì
 
 ```
- Trình duyệt ──► Web (Next.js, :3000) ──► MySQL 8.4 (:3306, Docker)
-                      ▲    │
-          webhook IF-05│    │ IF-03 kiểm kho khi đặt hàng
-                      │    ▼
-                Mock Main System (:4100) ◄── Worker: IF-01 sản phẩm, IF-02 tồn kho, IF-04 gửi đơn
-                                                │
- Email ──────────────────────────────────────► Mailpit (SMTP :1025, web :8025, Docker)
+ Khách hàng ──► Web (Next.js, :3000) ──► MySQL 8.4 (:3306, Docker)
+     │                ▲    │
+     │  webhook IF-05,│    │ IF-03 kiểm kho khi đặt hàng
+     │  catalog-changed    ▼
+     │          Mock Main System (:4100) ◄── Worker: IF-01 sản phẩm, IF-02 tồn kho, IF-04 gửi đơn
+     │           /admin   │  ghi ảnh
+     │             ▲      ▼
+     └─ tải ảnh ──────► MinIO (:9000, console :9001, Docker)
+                   │
+ Quản trị viên ────┘                  Email ──► Mailpit (SMTP :1025, web :8025, Docker)
 ```
 
 | Thành phần       | Địa chỉ                         | Vai trò                                                                                   |
 | ---------------- | ------------------------------- | ----------------------------------------------------------------------------------------- |
 | Web              | http://localhost:3000           | Website bán hàng (trang + API `/api/...`)                                                 |
 | Worker           | (không có giao diện)            | Kéo sản phẩm mỗi 10 phút, tồn kho mỗi phút; gửi đơn sang Main mỗi 5 giây, lỗi thì thử lại |
-| Mock Main System | http://localhost:4100/sim       | Giả lập hệ thống chính: nhận đơn, đổi trạng thái giao hàng, đổi tồn kho, giả lập sự cố    |
+| Mock Main System | http://localhost:4100/admin     | Giả lập hệ thống chính. `/admin`: nhập sản phẩm, biến thể, ảnh, tồn kho, đồng bộ sang web |
+|                  | http://localhost:4100/sim       | Nhận đơn, đổi trạng thái giao hàng, đổi tồn kho, giả lập sự cố                            |
+| MinIO            | http://localhost:9001 (console) | Kho ảnh sản phẩm (bucket `product-images`, ai cũng tải ảnh được qua cổng 9000)            |
 | MySQL 8.4        | `localhost:3306`, `root`/`root` | DB `selling` (dữ liệu chạy thử), `selling_test` (riêng cho test tự động)                  |
 | Mailpit          | http://localhost:8025           | Hộp thư giả: mọi email của hệ thống đều vào đây, không gửi ra ngoài                       |
 
-Mọi đơn hàng thanh toán khi nhận hàng (COD). Khách không cần tài khoản để đặt hàng.
+Mọi đơn hàng thanh toán khi nhận hàng (COD). Khách không cần tài khoản để đặt hàng. Website không có trang quản
+trị: sản phẩm và ảnh nhập ở `/admin` của Main System, website tự cập nhật sau mỗi lần lưu.
 
 ## 2. Chuẩn bị máy
 
@@ -57,7 +63,7 @@ Mọi đơn hàng thanh toán khi nhận hàng (COD). Khách không cần tài k
 - Đặt mã nguồn ở thư mục có **đường dẫn ngắn**, ví dụ `D:\code\abc-wear`. Đường dẫn quá dài (khoảng 250 ký tự tính tới
   `node_modules\.pnpm\...`) làm Prisma Client không nạp được (lỗi `#main-entry-point is not defined`).
 - Các lệnh trong tài liệu viết cho Git Bash. Trong PowerShell, thay `cp` bằng `Copy-Item`.
-- Các cổng 3000, 4100, 3306, 1025, 8025 phải còn trống.
+- Các cổng 3000, 4100, 3306, 1025, 8025, 9000, 9001 phải còn trống.
 
 ## 3. Cài đặt lần đầu
 
@@ -79,13 +85,15 @@ cd abc-wear
 cp .env.example .env
 ```
 
-**Bước 3 — Khởi động MySQL và Mailpit.** `--wait` chờ đến khi cả hai sẵn sàng.
+**Bước 3 — Khởi động MySQL, Mailpit và MinIO.** `--wait` chờ đến khi tất cả sẵn sàng. Container `minio-init` chạy một
+lần để tạo bucket ảnh `product-images` rồi tự thoát.
 
 ```bash
 docker compose up -d --wait
 ```
 
-Kết quả mong đợi: `Container abcwear-mysql Healthy` và `Container abcwear-mailpit Healthy`.
+Kết quả mong đợi: `abcwear-mysql`, `abcwear-mailpit`, `abcwear-minio` báo `Healthy`; `abcwear-minio-init` báo `Exited`
+(mã 0). Kiểm tra bucket: `docker logs abcwear-minio-init` có dòng `Access permission for local/product-images is set to download`.
 
 **Bước 4 — Cài thư viện.** Lệnh này tự sinh Prisma Client ở cuối (`postinstall: prisma generate`).
 
@@ -111,19 +119,22 @@ pnpm dev
 
 Lệnh chạy cùng lúc ba tiến trình, log có tiền tố `[web]`, `[worker]`, `[mock]`. Trong khoảng 10–20 giây đầu:
 
-- `[mock] [mock-main] listening on http://localhost:4100 (demo page: /sim)`
+- `[mock] [mock-main] listening on http://localhost:4100 (admin: /admin, demo: /sim)`
+- Lần đầu (bucket ảnh trống): `[mock-main] MinIO bucket is empty, creating seed images…` rồi `created 80 seed images`.
 - `[worker] IF-01 catalog failed: ... ECONNREFUSED` có thể xuất hiện một lần nếu worker khởi động trước mock — **bình thường**,
   worker tự thử lại sau 15 giây.
 - `[worker] IF-01 catalog: {"categories":6,"products":40,"variants":195,...}` và `[worker] IF-02 stock: ...` — dữ liệu đã vào DB.
 
 Kiểm tra nhanh:
 
-| Mở                                | Mong đợi                                       |
-| --------------------------------- | ---------------------------------------------- |
-| http://localhost:3000             | Trang chủ có danh mục Nam/Nữ và 8 sản phẩm mới |
-| http://localhost:3000/api/healthz | `{"status":"ok","db":"ok",...}`                |
-| http://localhost:4100/sim         | Trang "Mock Main System", chưa có đơn          |
-| http://localhost:8025             | Giao diện Mailpit                              |
+| Mở                                | Mong đợi                                               |
+| --------------------------------- | ------------------------------------------------------ |
+| http://localhost:3000             | Trang chủ có danh mục Nam/Nữ và 8 sản phẩm mới         |
+| http://localhost:3000/api/healthz | `{"status":"ok","db":"ok",...}`                        |
+| http://localhost:4100/sim         | Trang "Mock Main System"                               |
+| http://localhost:4100/admin       | Hỏi tài khoản (mục 5.2) → danh sách 40 sản phẩm có ảnh |
+| http://localhost:9001             | Console MinIO (mục 5.2), bucket `product-images`       |
+| http://localhost:8025             | Giao diện Mailpit                                      |
 
 Ở chế độ dev, mỗi trang được biên dịch ở lần mở đầu tiên nên có thể mất vài giây; các lần sau nhanh.
 
@@ -150,7 +161,13 @@ Thường không cần, vì `pnpm dev` tự đồng bộ. Dùng khi chỉ muốn
 pnpm db:seed
 ```
 
-Khi mock đang chạy mà muốn đồng bộ ngay (không đợi chu kỳ 1 phút / 10 phút):
+Thiếu ảnh seed trên MinIO (ví dụ vừa xóa volume MinIO) — chạy lại được nhiều lần, không tạo trùng:
+
+```bash
+pnpm seed:images
+```
+
+Khi mock đang chạy mà muốn đồng bộ ngay (không đợi chu kỳ 1 phút / 10 phút; ở `/admin` có nút "Đồng bộ ngay"):
 
 ```bash
 pnpm sync
@@ -158,7 +175,7 @@ pnpm sync
 
 ### 4.4 Tắt hẳn
 
-Dừng `pnpm dev` / `pnpm start:all` bằng `Ctrl+C`, rồi tắt MySQL và Mailpit (dữ liệu vẫn được giữ):
+Dừng `pnpm dev` / `pnpm start:all` bằng `Ctrl+C`, rồi tắt MySQL, Mailpit, MinIO (dữ liệu vẫn được giữ):
 
 ```bash
 docker compose stop
@@ -168,37 +185,53 @@ docker compose stop
 
 ### 5.1 Sản phẩm
 
-Dữ liệu đến từ mock Main System và luôn giống nhau mỗi lần khởi động mock: 6 danh mục (Nam: Áo thun nam, Quần nam;
-Nữ: Áo nữ, Váy đầm), 40 sản phẩm, 195 biến thể. Danh mục "Nam" có 20 sản phẩm.
+Dữ liệu đến từ mock Main System, khởi tạo từ seed: 6 danh mục (Nam: Áo thun nam, Quần nam; Nữ: Áo nữ, Váy đầm),
+40 sản phẩm mã `P000001`…`P000040`, 195 biến thể (SKU dạng `P000001-M-DEN` = mã-size-màu), mỗi sản phẩm 2 ảnh trên
+MinIO. Danh mục "Nam" có 20 sản phẩm. Sản phẩm thêm ở `/admin` nhận mã tiếp theo (`P000041`, …).
 
 Những sản phẩm hữu ích khi kiểm thử:
 
-| Mã   | Tên                       | Biến thể đáng chú ý (tồn kho ban đầu)                                                              |
-| ---- | ------------------------- | -------------------------------------------------------------------------------------------------- |
-| P001 | Áo thun nam cổ tròn basic | Hồng pastel: M = **1**, L = **0** (hết hàng), XL = 36; Đen: M = 38, L = 50, XL = 44; giá 329.000 ₫ |
-| P007 | Áo thun thể thao nam      | **Hết hàng toàn bộ**                                                                               |
-| P026 | Áo len nữ dệt kim         | **Hết hàng toàn bộ**                                                                               |
+| Mã      | Tên                       | Biến thể đáng chú ý (tồn kho ban đầu)                                                              |
+| ------- | ------------------------- | -------------------------------------------------------------------------------------------------- |
+| P000001 | Áo thun nam cổ tròn basic | Hồng pastel: M = **1**, L = **0** (hết hàng), XL = 36; Đen: M = 38, L = 50, XL = 44; giá 329.000 ₫ |
+| P000007 | Áo thun thể thao nam      | **Hết hàng toàn bộ**                                                                               |
+| P000026 | Áo len nữ dệt kim         | **Hết hàng toàn bộ**                                                                               |
 
-Tồn kho thay đổi khi đặt hàng (mock trừ kho, web đồng bộ lại sau ≤ 1 phút). Khởi động lại mock (tắt và chạy lại
-`pnpm dev`) để tồn kho trở về như ban đầu.
+Tồn kho thay đổi khi đặt hàng (mock trừ kho, web đồng bộ lại sau ≤ 1 phút). Dữ liệu mock lưu bền trong
+`mock-main/data/store.json`, khởi động lại **không** mất. Đưa sản phẩm và tồn kho về seed (giữ đơn đã nhận):
+`curl -X POST localhost:4100/sim/reset` — sản phẩm thêm ở `/admin` cũng bị xóa khỏi Main (website chuyển chúng sang
+ngừng bán).
 
 ### 5.2 Tài khoản thành viên
 
 Không có tài khoản dựng sẵn: tự đăng ký ở `/dang-ky` với email bất kỳ (ví dụ `tester1@example.com`). Không cần xác
 thực email. Mật khẩu từ 8 ký tự. Mọi email (xác nhận đơn, đặt lại mật khẩu) xem ở Mailpit.
 
+Tài khoản của công cụ (giá trị mặc định trong `.env.example`, chỉ dùng ở máy dev):
+
+| Công cụ                                      | Tài khoản                        | Biến trong `.env`                        |
+| -------------------------------------------- | -------------------------------- | ---------------------------------------- |
+| Quản lý sản phẩm http://localhost:4100/admin | `admin` / `change-me`            | `MOCK_ADMIN_USER`, `MOCK_ADMIN_PASSWORD` |
+| Console MinIO http://localhost:9001          | `minioadmin` / `change-me-12345` | `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD` |
+
+Trình duyệt hỏi tài khoản `/admin` bằng hộp thoại đăng nhập của chính trình duyệt (basic auth) và nhớ đến khi đóng
+trình duyệt.
+
 ### 5.3 Quy tắc nghiệp vụ cần biết khi kiểm thử
 
-| Quy tắc                              | Giá trị                             |
-| ------------------------------------ | ----------------------------------- |
-| Số lượng mỗi dòng trong giỏ          | 1–10                                |
-| Phí giao hàng                        | Tiêu chuẩn 30.000 ₫, Nhanh 50.000 ₫ |
-| Tổng thanh toán khi nhận hàng (COD)  | Tiền hàng + phí giao                |
-| Đăng nhập sai liên tiếp              | 5 lần → khóa 15 phút                |
-| Link đặt lại mật khẩu                | Hiệu lực 30 phút, dùng một lần      |
-| Thời gian đơn mới sang Main          | ≤ 10 giây                           |
-| Tồn kho đổi ở Main hiển thị trên web | ≤ 1 phút                            |
-| Mã đơn                               | `ABC-YYMMDD-XXXXX`                  |
+| Quy tắc                              | Giá trị                                                     |
+| ------------------------------------ | ----------------------------------------------------------- |
+| Số lượng mỗi dòng trong giỏ          | 1–10                                                        |
+| Phí giao hàng                        | Tiêu chuẩn 30.000 ₫, Nhanh 50.000 ₫                         |
+| Tổng thanh toán khi nhận hàng (COD)  | Tiền hàng + phí giao                                        |
+| Đăng nhập sai liên tiếp              | 5 lần → khóa 15 phút                                        |
+| Link đặt lại mật khẩu                | Hiệu lực 30 phút, dùng một lần                              |
+| Thời gian đơn mới sang Main          | ≤ 10 giây                                                   |
+| Tồn kho đổi ở Main hiển thị trên web | ≤ 1 phút                                                    |
+| Mã đơn                               | `ABC-YYMMDD-XXXXX`                                          |
+| Lưu ở `/admin` → website cập nhật    | ≤ 10 giây (thường ~1 giây)                                  |
+| Ảnh upload                           | JPEG/PNG/WebP, ≤ 5 MB, cạnh ngắn ≥ 400 px, ≤ 8 ảnh/sản phẩm |
+| Ảnh lưu trên MinIO                   | WebP, tối đa 1200 px, xoay theo EXIF                        |
 
 ## 6. Công cụ hỗ trợ kiểm thử
 
@@ -210,7 +243,8 @@ thực email. Mật khẩu từ 8 ký tự. Mọi email (xác nhận đơn, đ�
 - Ô **Tồn kho**: nhập SKU và số lượng mới.
 - **Giả lập sự cố**: "Lỗi 503", "Treo (timeout)", "Lỗi 2 lần gửi đơn" (chỉ làm hỏng việc gửi đơn), "Bình thường".
 
-Trạng thái của mock (đơn, tồn kho, sự cố) chỉ nằm trong bộ nhớ, mất khi khởi động lại.
+Đơn và tồn kho của mock lưu bền (`mock-main/data/store.json`); riêng chế độ giả lập sự cố trở về "Bình thường" khi
+khởi động lại.
 
 ### 6.2 Hộp thư Mailpit — http://localhost:8025
 
@@ -225,11 +259,31 @@ curl -X POST localhost:4100/sim/orders/<mainOrderId>/advance -H 'content-type: a
 ```
 
 ```bash
-curl -X POST localhost:4100/sim/stock -H 'content-type: application/json' -d '{"sku":"P001-DEN-M","qty":3}'
+curl -X POST localhost:4100/sim/stock -H 'content-type: application/json' -d '{"sku":"P000001-M-DEN","qty":3}'
 ```
 
 ```bash
 curl -X POST localhost:4100/sim/fail-mode -H 'content-type: application/json' -d '{"mode":"error","count":2,"only":"/main/orders"}'
+```
+
+```bash
+curl -X POST localhost:4100/sim/reset
+```
+
+```bash
+curl -X POST localhost:4100/sim/catalog-webhook -H 'content-type: application/json' -d '{"enabled":false}'
+```
+
+`/sim/catalog-webhook` với `false` giả lập website không nhận được webhook đồng bộ (TC-68); đặt lại `true` sau khi thử.
+
+API quản lý sản phẩm (cần tài khoản `/admin`):
+
+```bash
+curl -u admin:change-me "localhost:4100/admin/api/products?q=ao%20thun&status=active"
+```
+
+```bash
+curl -u admin:change-me -F "files=@tests/fixtures/sample.jpg" -F "files=@tests/fixtures/sample.png" localhost:4100/admin/api/products/P000001/images
 ```
 
 API của website trả lỗi dạng `{ "error": { "code", "message" } }` với thông báo tiếng Việt, ví dụ:
@@ -252,6 +306,28 @@ Trạng thái các đơn gần nhất và hàng đợi gửi Main:
 docker exec -it abcwear-mysql mysql -uroot -proot --default-character-set=utf8mb4 selling -e "SELECT code, status, mainOrderId, sendAttempts, nextSendAt, trackingNumber FROM orders ORDER BY createdAt DESC LIMIT 10"
 ```
 
+### 6.5 Trang quản lý sản phẩm của Main System — http://localhost:4100/admin
+
+Thuộc mock Main System, không thuộc website; giao diện cho máy tính.
+
+- **Danh sách**: ô tìm (tên, mã, SKU, không cần dấu), lọc danh mục và trạng thái; bảng có ảnh đại diện, mã, tên,
+  danh mục, giá thấp nhất, tổng tồn, trạng thái; nút "Sửa", "Ngừng bán" / "Mở bán"; khung **Đồng bộ sang website** có
+  nút "Đồng bộ ngay" và kết quả lần gần nhất; nút **Thêm sản phẩm**.
+- **Form sản phẩm**: tên, mô tả, danh mục (chỉ danh mục con), ô "Đang bán"; bảng biến thể: dòng mới nhập size, màu,
+  SKU (tự gợi ý `{mã}-{size}-{màu}`, sửa được), giá, tồn kho; dòng đã lưu chỉ sửa giá, tồn kho và có nút **Lưu nhanh**.
+  Sản phẩm mới phải "Lưu sản phẩm" (để có mã) rồi mới tải ảnh.
+- **Khu ảnh**: kéo-thả hoặc chọn nhiều file; thanh tiến trình; kết quả từng file (đã tải lên hoặc lý do bị từ chối);
+  nhãn "Ảnh đại diện" ở ảnh đầu; nút ↑ ↓ đổi thứ tự, "Xóa" (xóa cả trên MinIO).
+- Sau mỗi lần lưu, dòng trạng thái báo "Đã đồng bộ sang website…" hoặc "Chưa đồng bộ được sang website…" (dữ liệu vẫn
+  lưu ở Main, worker sẽ cập nhật ở lần đồng bộ định kỳ).
+
+Ảnh mẫu để thử: `tests/fixtures/sample.jpg` (JPG có EXIF xoay), `sample.png`, `fake-image.jpg` (thực chất là PDF).
+
+### 6.6 Console MinIO — http://localhost:9001
+
+Đăng nhập bằng tài khoản ở mục 5.2 → **Object Browser** → `product-images` → `products/<mã sản phẩm>/` để xem các file
+`.webp`. URL công khai của một ảnh: `http://localhost:9000/product-images/products/P000001/seed-1.webp`.
+
 ## 7. Kiểm thử thủ công theo chức năng
 
 Chạy hệ thống ở chế độ dev (mục 4.1). Mở sẵn ba tab: website, /sim, Mailpit. Mỗi ca ghi Đạt/Không đạt.
@@ -269,20 +345,20 @@ Cột "Mã" là mã use case trong đặc tả.
 | TC-06 | PS-02 | Nhập giá từ 500000 đến 100000, Áp dụng                               | Không lỗi trang; giá "đến" không hợp lệ bị bỏ qua, chỉ lọc theo giá "từ"                |
 | TC-07 | PS-03 | Bấm "Nam" trên menu                                                  | "20 sản phẩm", có cả "Áo thun …" lẫn "Quần …"                                           |
 | TC-08 | PS-03 | Bấm "Quần nam"                                                       | Chỉ còn quần; số lượng nhỏ hơn TC-07                                                    |
-| TC-09 | PS-04 | Mở P001 "Áo thun nam cổ tròn basic", chọn Hồng pastel → size L       | Huy hiệu "Tạm hết hàng"; nút "Thêm vào giỏ" bị khóa; size L gạch ngang                  |
+| TC-09 | PS-04 | Mở P000001 "Áo thun nam cổ tròn basic", chọn Hồng pastel → size L    | Huy hiệu "Tạm hết hàng"; nút "Thêm vào giỏ" bị khóa; size L gạch ngang                  |
 | TC-10 | PS-04 | Chọn Hồng pastel → size M                                            | "Chỉ còn 1 sản phẩm"; nút "Thêm vào giỏ" bật                                            |
-| TC-11 | PS-04 | Mở http://localhost:3000/san-pham/P007                               | Nút "Thêm vào giỏ" bị khóa, "Tạm hết hàng"                                              |
+| TC-11 | PS-04 | Mở http://localhost:3000/san-pham/P000007                            | Nút "Thêm vào giỏ" bị khóa, "Tạm hết hàng"                                              |
 | TC-12 | —     | Mở http://localhost:3000/san-pham/KHONG-CO                           | Trang "Không tìm thấy trang" (HTTP 404)                                                 |
 
 ### 7.2 Giỏ hàng
 
-| #     | Mã    | Bước                                                      | Kết quả mong đợi                                                            |
-| ----- | ----- | --------------------------------------------------------- | --------------------------------------------------------------------------- |
-| TC-13 | OD-01 | Ở P001, chọn Đen / M, Số lượng 2, "Thêm vào giỏ"          | "Đã thêm 2 sản phẩm vào giỏ hàng."; header "Giỏ hàng (2)"                   |
-| TC-14 | OD-01 | Ở P001, chọn Hồng pastel / M, Số lượng 2, "Thêm vào giỏ"  | "Sản phẩm này chỉ còn 1. Vui lòng giảm số lượng."; giỏ không đổi            |
-| TC-15 | OD-01 | Thêm 10 sản phẩm Đen / L, rồi thêm 1 nữa                  | Lần sau báo "Mỗi sản phẩm tối đa 10 trong một đơn hàng. Giỏ hàng đã có 10." |
-| TC-16 | OD-01 | Vào "Giỏ hàng", đổi số lượng một dòng, bấm "Xóa" một dòng | Thành tiền và tạm tính cập nhật ngay; số trên header đổi theo               |
-| TC-17 | OD-01 | Xóa hết                                                   | "Giỏ hàng đang trống." và nút "Tiếp tục mua sắm"                            |
+| #     | Mã    | Bước                                                        | Kết quả mong đợi                                                            |
+| ----- | ----- | ----------------------------------------------------------- | --------------------------------------------------------------------------- |
+| TC-13 | OD-01 | Ở P000001, chọn Đen / M, Số lượng 2, "Thêm vào giỏ"         | "Đã thêm 2 sản phẩm vào giỏ hàng."; header "Giỏ hàng (2)"                   |
+| TC-14 | OD-01 | Ở P000001, chọn Hồng pastel / M, Số lượng 2, "Thêm vào giỏ" | "Sản phẩm này chỉ còn 1. Vui lòng giảm số lượng."; giỏ không đổi            |
+| TC-15 | OD-01 | Thêm 10 sản phẩm Đen / L, rồi thêm 1 nữa                    | Lần sau báo "Mỗi sản phẩm tối đa 10 trong một đơn hàng. Giỏ hàng đã có 10." |
+| TC-16 | OD-01 | Vào "Giỏ hàng", đổi số lượng một dòng, bấm "Xóa" một dòng   | Thành tiền và tạm tính cập nhật ngay; số trên header đổi theo               |
+| TC-17 | OD-01 | Xóa hết                                                     | "Giỏ hàng đang trống." và nút "Tiếp tục mua sắm"                            |
 
 ### 7.3 Đặt hàng (khách vãng lai)
 
@@ -341,7 +417,7 @@ Cột "Mã" là mã use case trong đặc tả.
 
 | #     | Mã    | Bước                                                                                                  | Kết quả mong đợi                                                                                        |
 | ----- | ----- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| TC-51 | IN-01 | Ở /sim đổi tồn kho `P001-DEN-M` thành 3; đợi tối đa 1 phút; tải lại trang P001, chọn Đen / M          | "Chỉ còn 3 sản phẩm"                                                                                    |
+| TC-51 | IN-01 | Ở /sim đổi tồn kho `P000001-M-DEN` thành 3; đợi tối đa 1 phút; tải lại trang P000001, chọn Đen / M    | "Chỉ còn 3 sản phẩm"                                                                                    |
 | TC-52 | IN-02 | Ở /sim bấm "Lỗi 2 lần gửi đơn", đặt một đơn mới, theo dõi /sim                                        | Đơn chưa xuất hiện ngay; xuất hiện sau khoảng 30–40 giây (thử lại sau 10 s rồi 20 s); "Số lần nhận" = 1 |
 | TC-53 | IN-02 | Bấm "Treo (timeout)", thử đặt hàng; sau đó bấm "Bình thường"                                          | Sau khoảng 3 giây báo "Hệ thống đang bận, chưa thể đặt hàng…"; không tạo đơn; giỏ giữ nguyên            |
 | TC-54 | IN-02 | Ở /sim đặt tồn kho một SKU thành 0 **trong khi** giỏ đang có SKU đó, rồi đặt hàng ngay (trước 1 phút) | Báo "Không đủ hàng: … chỉ còn 0…"; không tạo đơn                                                        |
@@ -355,9 +431,28 @@ Cột "Mã" là mã use case trong đặc tả.
 | TC-57 | NF-02 | Mở http://localhost:3000/api/healthz; tắt MySQL (`docker compose stop mysql`), mở lại        | Lúc đầu 200 `"db":"ok"`; khi tắt MySQL: 503 `"db":"down"`. Bật lại: `docker compose start mysql` |
 | TC-58 | NF-01 | Mở các trang chính khi hệ thống không chịu tải                                               | Mỗi trang hiển thị dưới 2 giây (trừ lần biên dịch đầu ở chế độ dev)                              |
 
+### 7.9 Quản lý sản phẩm ở Main System (AD-01 → AD-05)
+
+Mở song song http://localhost:4100/admin và website. Dùng ảnh mẫu trong `tests/fixtures/`.
+
+| Mã    | Use case | Thao tác                                                                                                  | Kết quả mong đợi                                                                                                                                         |
+| ----- | -------- | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| TC-59 | AD-01    | Mở http://localhost:4100/admin, bấm "Hủy" ở hộp thoại đăng nhập                                           | 401, không thấy danh sách                                                                                                                                |
+| TC-60 | AD-01    | Đăng nhập (mục 5.2); gõ `ao thun` vào ô tìm; chọn danh mục "— Váy đầm"; trạng thái "Ngừng bán"            | Danh sách lọc ngay theo từng điều kiện; mỗi dòng có ảnh đại diện                                                                                         |
+| TC-61 | AD-02    | "Thêm sản phẩm": tên mới, danh mục "Áo nữ", 2 biến thể (M/Đen 399000/10, L/Đen 419000/5) → "Lưu sản phẩm" | Báo "Đã thêm sản phẩm P0000xx"; SKU `P0000xx-M-DEN`, `P0000xx-L-DEN`; dòng đồng bộ "Đã đồng bộ sang website"                                             |
+| TC-62 | AD-02    | Trong ≤ 10 giây tìm tên sản phẩm đó trên website                                                          | Có trong kết quả, đúng danh mục "Áo nữ", giá "Từ 399.000 ₫"; chưa có ảnh → khung "Chưa có ảnh"                                                           |
+| TC-63 | AD-02    | Thêm biến thể mới với SKU `P000001-M-HONG` → "Lưu sản phẩm"                                               | "SKU P000001-M-HONG đã tồn tại…"; tải lại trang, biến thể không được thêm                                                                                |
+| TC-64 | AD-03    | Kéo-thả `sample.jpg` và `sample.png` vào khu ảnh                                                          | "Đã tải lên 2 ảnh."; JPG thành 900×1200 (xoay theo EXIF); trang chi tiết website có ảnh lớn + 2 ảnh nhỏ                                                  |
+| TC-65 | AD-03    | Chọn `fake-image.jpg`; chọn một ảnh > 5 MB; chọn ảnh nhỏ hơn 400 px                                       | Mỗi file báo lý do riêng: không phải JPEG/PNG/WebP; vượt quá 5 MB; ảnh quá nhỏ                                                                           |
+| TC-66 | AD-03    | Tải tiếp cho đủ 8 ảnh rồi thêm 1 ảnh; bấm ↑ ở ảnh 2; "Xóa" một ảnh                                        | Ảnh thứ 9 bị từ chối "tối đa 8 ảnh"; ảnh 2 thành "Ảnh đại diện" và là ảnh trên thẻ sản phẩm ở website; ảnh đã xóa biến mất khỏi website và console MinIO |
+| TC-67 | AD-04    | Ở dòng biến thể M/Đen nhập tồn kho 0 → "Lưu nhanh"; đổi giá L/Đen → "Lưu nhanh"                           | Website: M/Đen "Tạm hết hàng"; L/Đen giá mới; đơn đã đặt trước đó vẫn giữ giá cũ (tra cứu đơn)                                                           |
+| TC-68 | AD-05    | Ở danh sách bấm "Ngừng bán" của sản phẩm; bấm "Đồng bộ ngay"; tắt webhook (mục 6.3) rồi đổi giá và lưu    | Sản phẩm biến mất khỏi tìm kiếm website; "Đồng bộ ngay" báo đã đồng bộ; khi tắt webhook: "Chưa đồng bộ được sang website…", giá trên website chưa đổi    |
+| TC-69 | AD-05    | Bật lại webhook, bấm "Đồng bộ ngay" (hoặc `pnpm sync`)                                                    | Website hiện giá mới                                                                                                                                     |
+| TC-70 | AD-05    | Tắt `pnpm dev` rồi chạy lại; mở `/admin`                                                                  | Sản phẩm, ảnh, tồn kho vừa sửa vẫn còn                                                                                                                   |
+
 ## 8. Kiểm thử tự động
 
-Tất cả lệnh chạy ở thư mục gốc dự án. Docker (MySQL, Mailpit) phải đang chạy.
+Tất cả lệnh chạy ở thư mục gốc dự án. Docker (MySQL, Mailpit, MinIO) phải đang chạy.
 
 ### 8.1 Kiểm tra mã nguồn
 
@@ -377,11 +472,13 @@ pnpm typecheck
 pnpm test
 ```
 
-- **Unit** (`tests/unit/`): hàm thuần, mock Main, client tích hợp, băm mật khẩu.
-- **Integration** (`tests/integration/`): module thật + MySQL + mock Main thật. Chạy trên DB riêng `selling_test`
-  (tự tạo và migrate), **không đụng** dữ liệu `selling`.
+- **Unit** (`tests/unit/`): hàm thuần, mock Main (gồm API `/admin`: quy tắc sản phẩm, SKU, ảnh với kho ảnh giả),
+  client tích hợp, băm mật khẩu.
+- **Integration** (`tests/integration/`): module thật + MySQL + mock Main thật; upload ảnh lên MinIO thật. Chạy trên
+  DB riêng `selling_test` (tự tạo và migrate) và bucket riêng `product-images-test` (tự tạo), **không đụng** dữ liệu
+  `selling` và bucket `product-images`.
 - Không cần chạy `pnpm dev`. Thời gian khoảng 30–60 giây.
-- Kết quả hiện tại: `Test Files 19 passed`, `Tests 146 passed`.
+- Kết quả hiện tại: `Test Files 22 passed`, `Tests 172 passed`.
 
 Chỉ chạy unit (không cần MySQL):
 
@@ -404,9 +501,10 @@ pnpm test:e2e
 - Nếu đã có server ở cổng 3000, Playwright dùng lại; nếu chưa, tự chạy `pnpm dev`. Đảm bảo server ở cổng 3000 là của
   chính dự án này.
 - Hai bước chuẩn bị chạy trước: đồng bộ dữ liệu từ mock (`pnpm sync`) và mở trước mọi trang để dev server biên dịch sẵn.
-- 27 ca kiểm thử + 2 bước chuẩn bị, phủ mọi use case (tìm kiếm, thành viên, giỏ, đặt hàng, tra cứu, tích hợp) và khổ
-  375 px. Email được đọc thật từ Mailpit. Thời gian khoảng 2–6 phút.
+- 32 ca kiểm thử + 2 bước chuẩn bị, phủ mọi use case (tìm kiếm, thành viên, giỏ, đặt hàng, tra cứu, tích hợp, quản
+  lý sản phẩm ở Main) và khổ 375 px. Email được đọc thật từ Mailpit. Thời gian khoảng 3–8 phút.
 - E2E chạy trên DB `selling` và tạo tài khoản/đơn thật (email đuôi `@e2e.abcwear.test`); tồn kho của mock giảm theo.
+  Ca AD-01 → AD-05 tạo một sản phẩm "Áo khoác gió E2E …" ở `/admin`; chạy xong sản phẩm được chuyển "Ngừng bán" và xóa ảnh.
 - Mặc định dùng Google Chrome có sẵn. Dùng Edge:
 
 ```bash
@@ -431,6 +529,7 @@ pnpm exec playwright show-report
 
 | File                           | Nội dung                                                                 |
 | ------------------------------ | ------------------------------------------------------------------------ |
+| `tests/e2e/admin.spec.ts`      | AD-01 → AD-05: `/admin`, upload ảnh, đồng bộ sang website ≤ 10 giây      |
 | `tests/e2e/catalog.spec.ts`    | PS-01 → PS-04, trang 404                                                 |
 | `tests/e2e/member.spec.ts`     | MA-01 → MA-04, khóa tài khoản, đặt lại mật khẩu qua email                |
 | `tests/e2e/order.spec.ts`      | OD-01 → OD-04, gộp giỏ, đơn sang Main ≤ 10 giây                          |
@@ -442,7 +541,7 @@ pnpm exec playwright show-report
 1. `pnpm lint` và `pnpm typecheck`
 2. `pnpm test`
 3. `pnpm test:e2e`
-4. Kiểm thử thủ công nhanh: TC-01, TC-09, TC-21 → TC-23, TC-28 → TC-30, TC-33, TC-47
+4. Kiểm thử thủ công nhanh: TC-01, TC-09, TC-21 → TC-23, TC-28 → TC-30, TC-33, TC-47, TC-61, TC-64, TC-68
 5. (Tùy chọn) Kiểm thử tải — mục 9
 
 ## 9. Kiểm thử tải (k6)
@@ -493,36 +592,41 @@ docker run --rm -i --add-host=host.docker.internal:host-gateway -e BASE_URL=http
 
 ## 10. Xử lý sự cố
 
-| Hiện tượng                                                                     | Nguyên nhân                                  | Cách xử lý                                                                     |
-| ------------------------------------------------------------------------------ | -------------------------------------------- | ------------------------------------------------------------------------------ |
-| `Can't reach database server at localhost:3306`                                | MySQL chưa chạy                              | Mở Docker Desktop, chạy `docker compose up -d --wait`                          |
-| Tiến trình dừng ngay với `Invalid environment configuration` và danh sách biến | Thiếu hoặc sai `.env`                        | `cp .env.example .env`, sửa biến được liệt kê                                  |
-| `@prisma/client did not initialize yet`                                        | Chưa sinh Prisma Client                      | `pnpm exec prisma generate` (bình thường `pnpm install` tự làm)                |
-| `Package import specifier "#main-entry-point" is not defined` (Windows)        | Đường dẫn thư mục dự án quá dài              | Chuyển dự án sang thư mục ngắn (ví dụ `D:\code\abc-wear`), cài lại             |
-| `EADDRINUSE` / cổng 3000 hoặc 4100 đang bị dùng                                | Còn tiến trình cũ hoặc ứng dụng khác         | Tắt tiến trình cũ; trên Windows tìm bằng `netstat -ano \| findstr :3000`       |
-| Trang có sản phẩm nhưng **không có ảnh**                                       | Ảnh do mock phục vụ, mock không chạy         | Chạy `pnpm dev` (gồm mock)                                                     |
-| Trang chủ trống "Chưa có sản phẩm"                                             | Worker chưa đồng bộ                          | Đợi 15–20 giây, hoặc chạy `pnpm sync` khi mock đang chạy                       |
-| `[worker] IF-01 catalog failed: … ECONNREFUSED` một lần lúc khởi động          | Worker lên trước mock                        | Bình thường, worker tự thử lại sau 15 giây                                     |
-| Không thấy email trong Mailpit                                                 | Mailpit chưa chạy, hoặc email đang gửi nền   | `docker compose ps`; đợi 1–2 giây; xem log web có `[email] failed`             |
-| Đặt hàng báo "Hệ thống đang bận…"                                              | Mock tắt, hoặc đang bật giả lập sự cố        | Ở /sim bấm "Bình thường"; kiểm tra mock đang chạy                              |
-| Đơn không sang /sim                                                            | Worker không chạy, hoặc đang giả lập lỗi     | Xem log `[worker]`, bảng `orders` (`sendAttempts`, `nextSendAt`) và `sync_log` |
-| Tài khoản bị khóa khi đang thử                                                 | Sai mật khẩu 5 lần                           | Đợi 15 phút hoặc dùng "Quên mật khẩu?" (đặt lại xong là mở khóa)               |
-| Trang hoàn tất đơn báo "Không tìm thấy đơn"                                    | Mở ở trình duyệt khác với trình duyệt đã đặt | Đúng thiết kế; dùng "Tra cứu đơn" với mã đơn + email                           |
-| E2E báo không tìm thấy Chrome                                                  | Máy không có Chrome                          | `PW_CHANNEL=msedge pnpm test:e2e`                                              |
-| E2E lỗi vì thiếu hàng sau nhiều lần chạy                                       | Tồn kho của mock giảm sau mỗi đơn            | Khởi động lại `pnpm dev` (mock trả tồn kho về ban đầu), đợi 1 phút             |
-| k6 dừng ở `setup` với `only N SKUs with stock >= 15; restart the mock`         | Tồn kho mock đã cạn sau nhiều lần đo         | Khởi động lại `pnpm start:all`                                                 |
-| `pnpm test` lỗi `Could not migrate the test database`                          | MySQL chưa chạy                              | `docker compose up -d --wait`                                                  |
+| Hiện tượng                                                                     | Nguyên nhân                                                   | Cách xử lý                                                                     |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `Can't reach database server at localhost:3306`                                | MySQL chưa chạy                                               | Mở Docker Desktop, chạy `docker compose up -d --wait`                          |
+| Tiến trình dừng ngay với `Invalid environment configuration` và danh sách biến | Thiếu hoặc sai `.env`                                         | `cp .env.example .env`, sửa biến được liệt kê                                  |
+| `@prisma/client did not initialize yet`                                        | Chưa sinh Prisma Client                                       | `pnpm exec prisma generate` (bình thường `pnpm install` tự làm)                |
+| `Package import specifier "#main-entry-point" is not defined` (Windows)        | Đường dẫn thư mục dự án quá dài                               | Chuyển dự án sang thư mục ngắn (ví dụ `D:\code\abc-wear`), cài lại             |
+| `EADDRINUSE` / cổng 3000 hoặc 4100 đang bị dùng                                | Còn tiến trình cũ hoặc ứng dụng khác                          | Tắt tiến trình cũ; trên Windows tìm bằng `netstat -ano \| findstr :3000`       |
+| Trang có sản phẩm nhưng **không có ảnh**                                       | MinIO chưa chạy hoặc chưa có ảnh seed                         | `docker compose up -d --wait`, rồi `pnpm seed:images`                          |
+| Lỗi `hostname "…" is not configured under images` của `next/image`             | Đổi `MINIO_PUBLIC_URL` khi web đang chạy                      | Khởi động lại `pnpm dev` (`next.config` đọc biến lúc khởi động)                |
+| `/admin` trả 401 dù đã nhập tài khoản                                          | Sai `MOCK_ADMIN_USER` / `MOCK_ADMIN_PASSWORD`                 | Xem `.env`; đóng hết cửa sổ trình duyệt để nó quên tài khoản cũ                |
+| Tải ảnh báo "Chưa cấu hình kho ảnh MinIO" / "Không lưu được ảnh…"              | Thiếu biến `MINIO_*` hoặc MinIO tắt                           | `cp .env.example .env` (bổ sung biến), `docker compose up -d --wait`           |
+| Admin báo "Chưa đồng bộ được sang website"                                     | Web không chạy, đang biên dịch, hoặc đã tắt webhook ở mục 6.3 | Bật web; `/sim/catalog-webhook` `{"enabled":true}`; bấm "Đồng bộ ngay"         |
+| Trang chủ trống "Chưa có sản phẩm"                                             | Worker chưa đồng bộ                                           | Đợi 15–20 giây, hoặc chạy `pnpm sync` khi mock đang chạy                       |
+| `[worker] IF-01 catalog failed: … ECONNREFUSED` một lần lúc khởi động          | Worker lên trước mock                                         | Bình thường, worker tự thử lại sau 15 giây                                     |
+| Không thấy email trong Mailpit                                                 | Mailpit chưa chạy, hoặc email đang gửi nền                    | `docker compose ps`; đợi 1–2 giây; xem log web có `[email] failed`             |
+| Đặt hàng báo "Hệ thống đang bận…"                                              | Mock tắt, hoặc đang bật giả lập sự cố                         | Ở /sim bấm "Bình thường"; kiểm tra mock đang chạy                              |
+| Đơn không sang /sim                                                            | Worker không chạy, hoặc đang giả lập lỗi                      | Xem log `[worker]`, bảng `orders` (`sendAttempts`, `nextSendAt`) và `sync_log` |
+| Tài khoản bị khóa khi đang thử                                                 | Sai mật khẩu 5 lần                                            | Đợi 15 phút hoặc dùng "Quên mật khẩu?" (đặt lại xong là mở khóa)               |
+| Trang hoàn tất đơn báo "Không tìm thấy đơn"                                    | Mở ở trình duyệt khác với trình duyệt đã đặt                  | Đúng thiết kế; dùng "Tra cứu đơn" với mã đơn + email                           |
+| E2E báo không tìm thấy Chrome                                                  | Máy không có Chrome                                           | `PW_CHANNEL=msedge pnpm test:e2e`                                              |
+| E2E lỗi vì thiếu hàng sau nhiều lần chạy                                       | Tồn kho của mock giảm sau mỗi đơn                             | `curl -X POST localhost:4100/sim/reset` (tồn kho về seed), rồi `pnpm sync`     |
+| k6 dừng ở `setup` với `only N SKUs with stock >= 15; restart the mock`         | Tồn kho mock đã cạn sau nhiều lần đo                          | `curl -X POST localhost:4100/sim/reset`, đợi 1 phút                            |
+| `pnpm test` lỗi `Could not migrate the test database`                          | MySQL chưa chạy                                               | `docker compose up -d --wait`                                                  |
 
 ## 11. Đặt lại dữ liệu và dọn dẹp
 
-| Muốn                                          | Làm                                                               |
-| --------------------------------------------- | ----------------------------------------------------------------- |
-| Trả tồn kho, đơn và sự cố của mock về ban đầu | Tắt và chạy lại `pnpm dev` (trạng thái mock chỉ nằm trong bộ nhớ) |
-| Xóa hết email trong Mailpit                   | Nút xóa trong giao diện http://localhost:8025                     |
-| Xóa toàn bộ dữ liệu web (tài khoản, đơn, giỏ) | Xem cảnh báo bên dưới                                             |
+| Muốn                                          | Làm                                                              |
+| --------------------------------------------- | ---------------------------------------------------------------- |
+| Trả sản phẩm, tồn kho của mock về seed        | `curl -X POST localhost:4100/sim/reset` (giữ đơn, giữ ảnh MinIO) |
+| Xóa cả đơn mock đã nhận                       | Tắt `pnpm dev`, xóa `mock-main/data/store.json`, chạy lại        |
+| Xóa hết email trong Mailpit                   | Nút xóa trong giao diện http://localhost:8025                    |
+| Xóa toàn bộ dữ liệu web (tài khoản, đơn, giỏ) | Xem cảnh báo bên dưới                                            |
 
-**Xóa toàn bộ dữ liệu — không hoàn tác được.** Lệnh sau xóa cả volume MySQL (mọi DB: `selling`, `selling_test`) và
-dữ liệu Mailpit, sau đó dựng lại từ đầu:
+**Xóa toàn bộ dữ liệu — không hoàn tác được.** Lệnh sau xóa cả volume MySQL (mọi DB: `selling`, `selling_test`),
+dữ liệu Mailpit và volume MinIO (mọi ảnh), sau đó dựng lại từ đầu:
 
 ```bash
 docker compose down -v
@@ -536,7 +640,8 @@ docker compose up -d --wait
 pnpm db:deploy
 ```
 
-Sau đó chạy `pnpm dev` để nạp lại sản phẩm.
+Sau đó chạy `pnpm dev` để nạp lại sản phẩm (mock tự vẽ lại ảnh seed vì bucket trống). Nếu muốn dữ liệu mock cũng về
+seed, xóa thêm `mock-main/data/store.json` trước khi chạy.
 
 ---
 
