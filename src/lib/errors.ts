@@ -14,6 +14,7 @@ export const ERROR_STATUS = {
   OUT_OF_STOCK: 409,
   NOT_PURCHASABLE: 409,
   MAIN_UNAVAILABLE: 503,
+  SYNC_FAILED: 502,
   INTERNAL_ERROR: 500,
 } as const;
 
@@ -32,6 +33,7 @@ const DEFAULT_MESSAGES: Record<ErrorCode, string> = {
   OUT_OF_STOCK: "Một số sản phẩm không đủ hàng. Vui lòng giảm số lượng hoặc bỏ sản phẩm đó.",
   NOT_PURCHASABLE: "Một số sản phẩm tạm hết hàng. Vui lòng bỏ sản phẩm đó khỏi giỏ.",
   MAIN_UNAVAILABLE: "Hệ thống đang bận, chưa thể đặt hàng. Vui lòng thử lại sau ít phút.",
+  SYNC_FAILED: "Website chưa lấy được dữ liệu mới từ Main System. Vui lòng thử lại sau.",
   INTERNAL_ERROR: "Đã có lỗi xảy ra. Vui lòng thử lại sau.",
 };
 

@@ -24,7 +24,7 @@ SELECT
   ELT(1 + i % 4, 'CAT-NAM-AO-THUN', 'CAT-NAM-QUAN', 'CAT-NU-AO', 'CAT-NU-VAY'),
   CONCAT(ELT(1 + i % 4, 'Áo thun nam', 'Quần jeans nam', 'Áo sơ mi nữ', 'Đầm suông'), ' mẫu ', i),
   CONCAT('Chất liệu ', ELT(1 + i % 3, 'cotton 100%', 'kaki co giãn', 'linen'), ', form rộng thoải mái. Giặt máy ở nhiệt độ thường.'),
-  JSON_ARRAY(CONCAT('http://localhost:4100/images/P001-1.svg')),
+  JSON_ARRAY(CONCAT('http://localhost:9000/product-images/products/P000001/seed-1.webp')),
   i % 50 <> 0, -- 2% inactive
   TIMESTAMP('2025-01-01') + INTERVAL i MINUTE,
   NOW(3)

@@ -14,7 +14,7 @@ export interface LiveVariant {
 }
 
 /**
- * First variant (scanning P001…P040 from `start`) matching the predicate, read live from the
+ * First variant (scanning P000001…P000040 from `start`) matching the predicate, read live from the
  * API: stock moves as E2E orders reach the mock, so tests never hard-code quantities.
  */
 export async function findVariant(
@@ -23,7 +23,7 @@ export async function findVariant(
   start = 1,
 ): Promise<LiveVariant> {
   for (let n = start; n <= 40; n++) {
-    const id = `P${String(n).padStart(3, "0")}`;
+    const id = `P${String(n).padStart(6, "0")}`;
     const res = await request.get(`/api/products/${id}`);
     if (!res.ok()) continue;
     const product = await res.json();

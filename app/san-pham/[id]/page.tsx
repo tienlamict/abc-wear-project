@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { ProductGallery } from "@/components/ProductGallery";
 import { VariantPicker } from "@/components/VariantPicker";
 import { getProductCached } from "../../_lib/catalog";
 
@@ -32,25 +32,7 @@ export default async function ProductPage({ params }: Props) {
         ]}
       />
       <div className="grid gap-8 md:grid-cols-2">
-        <div className="grid grid-cols-2 gap-2">
-          {product.images.map((src, i) => (
-            <div
-              key={src}
-              className={`relative aspect-[3/4] overflow-hidden rounded-lg bg-gray-100 ${
-                i === 0 ? "md:col-span-2" : ""
-              }`}
-            >
-              <Image
-                src={src}
-                alt={`${product.name} — ảnh ${i + 1}`}
-                fill
-                priority={i === 0}
-                sizes="(min-width: 768px) 50vw, 100vw"
-                className="object-cover"
-              />
-            </div>
-          ))}
-        </div>
+        <ProductGallery images={product.images} name={product.name} />
 
         <div>
           <h1 className="text-2xl font-bold">{product.name}</h1>

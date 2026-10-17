@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ProductSummary } from "@/modules/catalog";
+import { ImagePlaceholder } from "./ImagePlaceholder";
 import { PriceTag } from "./PriceTag";
 
 export function ProductCard({ product }: { product: ProductSummary }) {
@@ -8,7 +9,7 @@ export function ProductCard({ product }: { product: ProductSummary }) {
     <article data-testid="product-card" className="group">
       <Link href={`/san-pham/${product.id}`} className="block">
         <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-gray-100">
-          {product.image && (
+          {product.image ? (
             <Image
               src={product.image}
               alt={product.name}
@@ -16,6 +17,8 @@ export function ProductCard({ product }: { product: ProductSummary }) {
               sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
               className="object-cover transition group-hover:scale-105"
             />
+          ) : (
+            <ImagePlaceholder />
           )}
           {!product.inStock && (
             <span className="absolute left-2 top-2 rounded bg-gray-900/80 px-2 py-0.5 text-xs text-white">

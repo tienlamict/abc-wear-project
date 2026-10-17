@@ -11,7 +11,7 @@ const PUBLIC_PAGES = [
   "/danh-muc/ao-thun-nam?size=M&sort=price_asc",
   "/tim-kiem?q=ao%20thun",
   "/tim-kiem?q=khongcosanphamnay",
-  "/san-pham/P001",
+  "/san-pham/P000001",
   "/gio-hang",
   "/dat-hang",
   "/tra-cuu-don",

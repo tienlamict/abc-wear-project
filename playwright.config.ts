@@ -1,5 +1,12 @@
 import { defineConfig, devices } from "@playwright/test";
 
+// Same settings as the app (MOCK_ADMIN_* for the /admin tests, MAIN_SYSTEM_URL, …).
+try {
+  process.loadEnvFile(".env");
+} catch {
+  // no .env: rely on the environment
+}
+
 const BASE_URL = process.env.E2E_BASE_URL ?? "http://localhost:3000";
 
 // Chromium only. Defaults to the locally installed Google Chrome so no browser download is

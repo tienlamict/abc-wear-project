@@ -58,7 +58,7 @@ describe("IF-05 webhook and order tracking (OD-05, OD-06)", () => {
   /** Places an order and lets the worker send it, so it has a mainOrderId. */
   async function sentOrder(memberId: string | null = null) {
     const owner = memberId ? { memberId } : { sessionId: randomUUID() };
-    await addItem(owner, { sku: "P001-DEN-M", quantity: 1 });
+    await addItem(owner, { sku: "P000001-M-DEN", quantity: 1 });
     const { code } = await placeOrder({
       owner,
       memberId,

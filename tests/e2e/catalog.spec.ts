@@ -137,13 +137,13 @@ test("PS-04 an out-of-stock variant locks 'Thêm vào giỏ' and shows 'Tạm h�
   page,
   request,
 }) => {
-  // P001 has sold-out and in-stock variants in the seed; read the live state to pick them.
-  const variants = await productVariants(request, "P001");
+  // P000001 has sold-out and in-stock variants in the seed; read the live state to pick them.
+  const variants = await productVariants(request, "P000001");
   const soldOut = variants.find((v) => !v.purchasable);
   const inStock = variants.find((v) => v.purchasable);
-  test.skip(!soldOut || !inStock, "P001 needs one sold-out and one in-stock variant");
+  test.skip(!soldOut || !inStock, "P000001 needs one sold-out and one in-stock variant");
 
-  await page.goto("/san-pham/P001");
+  await page.goto("/san-pham/P000001");
   const addToCart = page.getByRole("button", { name: "Thêm vào giỏ" });
   const sizeButton = (size: string) =>
     page.getByRole("group", { name: "Kích cỡ" }).getByRole("button", {
@@ -169,13 +169,13 @@ test("PS-04 an out-of-stock variant locks 'Thêm vào giỏ' and shows 'Tạm h�
 });
 
 test("PS-04 a product with no stock at all cannot be added", async ({ page, request }) => {
-  const variants = await productVariants(request, "P007");
+  const variants = await productVariants(request, "P000007");
   test.skip(
     variants.some((v) => v.purchasable),
-    "P007 is expected to be sold out",
+    "P000007 is expected to be sold out",
   );
 
-  await page.goto("/san-pham/P007");
+  await page.goto("/san-pham/P000007");
   await expect(page.getByRole("button", { name: "Thêm vào giỏ" })).toBeDisabled();
   await expect(page.getByText("Tạm hết hàng", { exact: true })).toBeVisible();
 });

@@ -48,7 +48,7 @@ const KEYWORDS = [
   "linen",
 ];
 const SIZES = ["", "", "M", "L"];
-const PRODUCT_IDS = Array.from({ length: 40 }, (_, i) => `P${String(i + 1).padStart(3, "0")}`);
+const PRODUCT_IDS = Array.from({ length: 40 }, (_, i) => `P${String(i + 1).padStart(6, "0")}`);
 
 const json = (body) => ({
   body: JSON.stringify(body),

@@ -2,19 +2,24 @@ import { createHash, timingSafeEqual } from "node:crypto";
 import { getConfig } from "@/lib/config";
 import { AppError } from "@/lib/errors";
 import { writeSyncLog } from "./sync-log";
+import type { Iface } from "./types";
 
 const digest = (value: string) => createHash("sha256").update(value).digest();
 
 /**
- * IF-05: Main System authenticates with the shared `x-main-secret` header (spec §15: no HMAC).
- * Compared in constant time; a mismatch is logged and rejected with 401.
+ * Webhooks from Main System (IF-05, catalog-changed) authenticate with the shared
+ * `x-main-secret` header (spec §15: no HMAC). Compared in constant time; a mismatch is logged
+ * under `iface` and rejected with 401.
  */
-export async function verifyMainSecret(header: string | null): Promise<void> {
+export async function verifyMainSecret(
+  header: string | null,
+  iface: Iface = "IF-05",
+): Promise<void> {
   const expected = getConfig().MAIN_WEBHOOK_SECRET;
   if (header && timingSafeEqual(digest(header), digest(expected))) return;
   await writeSyncLog({
     direction: "IN",
-    iface: "IF-05",
+    iface,
     result: "ERROR",
     message: header ? "rejected: wrong x-main-secret" : "rejected: missing x-main-secret",
   });

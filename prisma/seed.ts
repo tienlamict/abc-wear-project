@@ -8,11 +8,15 @@ import { prisma } from "@/lib/db";
 import { HttpMainSystemClient, syncCatalog, syncStock } from "@/modules/integration";
 import { loadConfigOrExit } from "../worker/env";
 import { buildMockMain } from "../mock-main/app";
+import { DEFAULT_STORE_FILE } from "../mock-main/store";
 
 async function main(): Promise<void> {
   const config = loadConfigOrExit("seed");
-  // Image URLs must point at the real mock (MAIN_SYSTEM_URL), not this temporary one.
-  const mock = buildMockMain({ imageBaseUrl: config.MAIN_SYSTEM_URL });
+  // Same data as the real mock (its store file, or the seed on first run), images on MinIO.
+  const mock = buildMockMain({
+    storeFile: process.env.MOCK_STORE_FILE ?? DEFAULT_STORE_FILE,
+    imagePublicUrl: process.env.MINIO_PUBLIC_URL,
+  });
   await mock.listen({ port: 0, host: "127.0.0.1" });
   const { port } = mock.server.address() as AddressInfo;
   try {

@@ -25,7 +25,7 @@ const WARM_UP = [
   "/",
   "/danh-muc/nam",
   "/tim-kiem?q=ao",
-  "/san-pham/P001",
+  "/san-pham/P000001",
   "/gio-hang",
   "/dat-hang",
   "/dat-hang/hoan-tat/ABC-000000-AAAAA",
@@ -38,7 +38,7 @@ const WARM_UP = [
   "/tai-khoan/don-hang",
   "/tai-khoan/don-hang/ABC-000000-AAAAA",
   "/api/categories",
-  "/api/products/P001",
+  "/api/products/P000001",
   "/api/cart",
   "/api/me",
   "/api/orders",
@@ -56,6 +56,7 @@ const WARM_UP_POST = [
   "/api/auth/reset-password",
   "/api/me/change-password",
   "/api/integration/order-status",
+  "/api/integration/catalog-changed",
 ];
 
 setup("every route is compiled before the tests", async ({ request }) => {

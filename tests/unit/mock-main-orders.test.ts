@@ -14,7 +14,7 @@ const order = (id = "order-1", quantity = 2): MainOrderPayload => ({
   codAmount: 688_000,
   items: [
     {
-      sku: "P001-DEN-M",
+      sku: "P000001-M-DEN",
       productName: "Áo thun nam cổ tròn basic",
       size: "M",
       color: "Đen",
@@ -44,9 +44,9 @@ describe("mock-main IF-03 / IF-04 / fail-mode", () => {
       url: "/main/stock-check",
       payload: {
         lines: [
-          { sku: "P001-HONG-M", qty: 1 }, // 1 in stock
-          { sku: "P001-HONG-M", qty: 1 },
-          { sku: "P001-DEN-M", qty: 2 },
+          { sku: "P000001-M-HONG", qty: 1 }, // 1 in stock
+          { sku: "P000001-M-HONG", qty: 1 },
+          { sku: "P000001-M-DEN", qty: 2 },
           { sku: "NOPE", qty: 1 },
         ],
       },
@@ -55,7 +55,7 @@ describe("mock-main IF-03 / IF-04 / fail-mode", () => {
     expect(res.json()).toEqual({
       ok: false,
       shortages: [
-        { sku: "P001-HONG-M", requested: 2, available: 1 },
+        { sku: "P000001-M-HONG", requested: 2, available: 1 },
         { sku: "NOPE", requested: 1, available: 0 },
       ],
     });
@@ -63,23 +63,23 @@ describe("mock-main IF-03 / IF-04 / fail-mode", () => {
     const ok = await app.inject({
       method: "POST",
       url: "/main/stock-check",
-      payload: { lines: [{ sku: "P001-DEN-M", qty: 2 }] },
+      payload: { lines: [{ sku: "P000001-M-DEN", qty: 2 }] },
     });
     expect(ok.json()).toEqual({ ok: true, shortages: [] });
   });
 
   it("IF-04 creates an order once, takes stock, and answers repeats with the same id", async () => {
-    const before = (await stockOf("P001-DEN-M"))!;
+    const before = (await stockOf("P000001-M-DEN"))!;
     const first = await app.inject({ method: "POST", url: "/main/orders", payload: order() });
     expect(first.statusCode).toBe(201);
     const { mainOrderId } = first.json();
     expect(mainOrderId).toMatch(/^MO-[0-9A-Z]+-\d{4}$/);
-    expect(await stockOf("P001-DEN-M")).toBe(before - 2);
+    expect(await stockOf("P000001-M-DEN")).toBe(before - 2);
 
     const again = await app.inject({ method: "POST", url: "/main/orders", payload: order() });
     expect(again.statusCode).toBe(200);
     expect(again.json()).toEqual({ mainOrderId, duplicate: true });
-    expect(await stockOf("P001-DEN-M")).toBe(before - 2);
+    expect(await stockOf("P000001-M-DEN")).toBe(before - 2);
 
     const { orders } = (await app.inject({ method: "GET", url: "/sim/orders" })).json();
     expect(orders).toHaveLength(1);

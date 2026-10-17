@@ -16,7 +16,7 @@ const order: MainOrderPayload = {
   codAmount: 359_000,
   items: [
     {
-      sku: "P001-DEN-M",
+      sku: "P000001-M-DEN",
       productName: "Áo thun nam cổ tròn basic",
       size: "M",
       color: "Đen",
@@ -125,11 +125,11 @@ describe("mock-main IF-05 advance, /sim/stock, scoped fail-mode, /sim page", () 
       const res = await app.inject({
         method: "POST",
         url: "/sim/stock",
-        payload: { sku: "P001-DEN-M", qty: 3 },
+        payload: { sku: "P000001-M-DEN", qty: 3 },
       });
-      expect(res.json()).toEqual({ sku: "P001-DEN-M", qty: 3 });
+      expect(res.json()).toEqual({ sku: "P000001-M-DEN", qty: 3 });
       const { items } = (await app.inject({ method: "GET", url: "/main/stock" })).json();
-      expect(items.find((i: { sku: string }) => i.sku === "P001-DEN-M").qty).toBe(3);
+      expect(items.find((i: { sku: string }) => i.sku === "P000001-M-DEN").qty).toBe(3);
       expect(
         (await app.inject({ method: "POST", url: "/sim/stock", payload: { sku: "NOPE", qty: 1 } }))
           .statusCode,
@@ -139,7 +139,7 @@ describe("mock-main IF-05 advance, /sim/stock, scoped fail-mode, /sim page", () 
           await app.inject({
             method: "POST",
             url: "/sim/stock",
-            payload: { sku: "P001-DEN-M", qty: -1 },
+            payload: { sku: "P000001-M-DEN", qty: -1 },
           })
         ).statusCode,
       ).toBe(400);
@@ -159,7 +159,7 @@ describe("mock-main IF-05 advance, /sim/stock, scoped fail-mode, /sim page", () 
       const check = await app.inject({
         method: "POST",
         url: "/main/stock-check",
-        payload: { lines: [{ sku: "P001-DEN-M", qty: 1 }] },
+        payload: { lines: [{ sku: "P000001-M-DEN", qty: 1 }] },
       });
       expect(check.statusCode).toBe(200);
       expect(

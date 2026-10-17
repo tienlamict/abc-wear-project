@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Quản lý sản phẩm · Main System</title>
+    <link rel="stylesheet" href="/admin/admin.css" />
+  </head>
+  <body data-page="list">
+    <header class="top">
+      <strong>ABC Wear · Main System</strong>
+      <span class="muted">Quản lý sản phẩm (mock)</span>
+      <nav>
+        <a href="/admin">Sản phẩm</a>
+        <a href="/sim">Đơn hàng và giả lập (/sim)</a>
+      </nav>
+    </header>
+    <main>
+      <h1>Sản phẩm</h1>
+
+      <section class="card" aria-labelledby="sync-title">
+        <div class="row">
+          <div class="grow">
+            <h2 id="sync-title">Đồng bộ sang website</h2>
+            <p class="muted" style="margin: 0">
+              Website tự đồng bộ sau mỗi lần lưu. Dùng nút này nếu cần đồng bộ lại toàn bộ.
+            </p>
+          </div>
+          <button type="button" id="sync-now" class="primary">Đồng bộ ngay</button>
+        </div>
+        <p id="sync-last" class="msg" role="status" aria-label="Kết quả đồng bộ gần nhất"></p>
+      </section>
+
+      <section class="card">
+        <form id="filters" class="row" role="search" aria-label="Lọc sản phẩm">
+          <div class="grow">
+            <label for="q">Tìm theo tên, mã, SKU</label>
+            <input type="search" id="q" name="q" placeholder="Ví dụ: áo thun, P000001" />
+          </div>
+          <div>
+            <label for="category">Danh mục</label>
+            <select id="category" name="category">
+              <option value="">Tất cả</option>
+            </select>
+          </div>
+          <div>
+            <label for="status">Trạng thái</label>
+            <select id="status" name="status">
+              <option value="">Tất cả</option>
+              <option value="active">Đang bán</option>
+              <option value="inactive">Ngừng bán</option>
+            </select>
+          </div>
+          <a class="button primary" href="/admin/products/new">Thêm sản phẩm</a>
+        </form>
+      </section>
+
+      <p id="list-msg" class="msg" role="status"></p>
+      <section class="card">
+        <p id="count" class="muted" style="margin-top: 0"></p>
+        <table aria-label="Danh sách sản phẩm">
+          <thead>
+            <tr>
+              <th>Ảnh</th>
+              <th>Mã</th>
+              <th>Tên</th>
+              <th>Danh mục</th>
+              <th class="num">Giá thấp nhất</th>
+              <th class="num">Tổng tồn</th>
+              <th>Trạng thái</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="rows">
+            <tr>
+              <td colspan="8" class="muted">Đang tải…</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+    <script src="/admin/admin.js"></script>
+  </body>
+</html>

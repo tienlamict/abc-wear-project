@@ -37,10 +37,10 @@ const seed = seedJson as Seed;
 const variant = (sku: string) =>
   seed.products.flatMap((p) => p.variants).find((v) => v.sku === sku)!;
 // Seed facts these tests rely on.
-const ONE_LEFT = "P001-HONG-M"; // qty 1
-const SOLD_OUT = "P001-HONG-L"; // qty 0
-const PLENTY = "P001-DEN-M"; // qty 38
-const PLENTY_2 = "P001-HONG-XL"; // qty 36
+const ONE_LEFT = "P000001-M-HONG"; // qty 1
+const SOLD_OUT = "P000001-L-HONG"; // qty 0
+const PLENTY = "P000001-M-DEN"; // qty 38
+const PLENTY_2 = "P000001-XL-HONG"; // qty 36
 
 const checkout = {
   customerName: "Nguyễn Văn An",
@@ -142,13 +142,13 @@ describe("cart, placeOrder and IF-04 sending against the real mock Main System",
     it("flags lines that became unavailable", async () => {
       const owner = guest();
       await addItem(owner, { sku: PLENTY, quantity: 1 });
-      await prisma.product.update({ where: { id: "P001" }, data: { isActive: false } });
+      await prisma.product.update({ where: { id: "P000001" }, data: { isActive: false } });
       try {
         const cart = await getCart(owner);
         expect(cart.hasProblems).toBe(true);
         expect(cart.lines[0]?.problem).toBe("UNAVAILABLE");
       } finally {
-        await prisma.product.update({ where: { id: "P001" }, data: { isActive: true } });
+        await prisma.product.update({ where: { id: "P000001" }, data: { isActive: true } });
       }
     });
 

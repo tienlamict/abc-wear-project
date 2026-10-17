@@ -54,6 +54,7 @@ section{margin:24px 0}
 #msg{white-space:pre-wrap;background:#f3f4f6;padding:8px;border-radius:6px;min-height:1.5em}
 </style></head><body>
 <h1>Mock Main System</h1>
+<p><a href="/admin">Quản lý sản phẩm và ảnh (/admin)</a></p>
 <p>Đơn đã nhận từ website (IF-04). Bấm "Chuyển trạng thái" để đổi trạng thái và gọi webhook IF-05 về website.</p>
 <p id="msg" role="status"></p>
 <table>
@@ -63,7 +64,7 @@ section{margin:24px 0}
 
 <section>
 <h2>Tồn kho</h2>
-<form id="stock">SKU <input name="sku" required placeholder="P001-DEN-M"> Số lượng <input name="qty" type="number" min="0" required> <button>Cập nhật</button></form>
+<form id="stock">SKU <input name="sku" required placeholder="P000001-M-DEN"> Số lượng <input name="qty" type="number" min="0" required> <button>Cập nhật</button></form>
 <p><small>Website cập nhật sau lần đồng bộ IF-02 kế tiếp (≤ 1 phút).</small></p>
 </section>
 

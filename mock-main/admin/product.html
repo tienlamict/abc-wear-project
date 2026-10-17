@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sản phẩm · Main System</title>
+    <link rel="stylesheet" href="/admin/admin.css" />
+  </head>
+  <body data-page="product">
+    <header class="top">
+      <strong>ABC Wear · Main System</strong>
+      <span class="muted">Quản lý sản phẩm (mock)</span>
+      <nav>
+        <a href="/admin">Sản phẩm</a>
+        <a href="/sim">Đơn hàng và giả lập (/sim)</a>
+      </nav>
+    </header>
+    <main>
+      <p><a href="/admin">← Danh sách sản phẩm</a></p>
+      <h1 id="title">Sản phẩm</h1>
+      <p id="msg" class="msg" role="status"></p>
+      <p id="sync" class="msg" role="status" aria-label="Đồng bộ sang website"></p>
+
+      <form id="product-form" aria-label="Thông tin sản phẩm" novalidate>
+        <section class="card">
+          <h2>Thông tin</h2>
+          <div class="row">
+            <div class="grow">
+              <label for="name">Tên sản phẩm</label>
+              <input type="text" id="name" name="name" maxlength="255" required />
+            </div>
+            <div>
+              <label for="categoryId">Danh mục</label>
+              <select id="categoryId" name="categoryId" required>
+                <option value="">Chọn danh mục…</option>
+              </select>
+            </div>
+            <div>
+              <label class="inline">
+                <input type="checkbox" id="isActive" name="isActive" checked />
+                Đang bán
+              </label>
+            </div>
+          </div>
+          <div style="margin-top: 12px">
+            <label for="description">Mô tả</label>
+            <textarea id="description" name="description" maxlength="5000"></textarea>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Biến thể (size, màu, giá, tồn kho)</h2>
+          <table aria-label="Biến thể">
+            <thead>
+              <tr>
+                <th>Size</th>
+                <th>Màu</th>
+                <th>SKU</th>
+                <th class="num">Giá (VND)</th>
+                <th class="num">Tồn kho</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="variants"></tbody>
+          </table>
+          <p style="margin-bottom: 0">
+            <button type="button" id="add-variant">+ Thêm biến thể</button>
+            <span class="muted">SKU gợi ý theo mẫu {mã}-{size}-{màu}, có thể sửa.</span>
+          </p>
+          <datalist id="size-list"></datalist>
+          <datalist id="color-list"></datalist>
+        </section>
+
+        <p><button type="submit" class="primary" id="save">Lưu sản phẩm</button></p>
+      </form>
+
+      <section class="card" aria-labelledby="images-title">
+        <h2 id="images-title">Ảnh sản phẩm</h2>
+        <p id="images-locked" class="muted" hidden>
+          Lưu thông tin sản phẩm trước (để có mã sản phẩm) rồi mới tải ảnh.
+        </p>
+        <div id="images-area" hidden>
+          <label id="dropzone" class="dropzone" for="files">
+            Kéo-thả ảnh vào đây hoặc <u>chọn nhiều file</u> <br /><small id="image-rules"></small>
+            <input
+              type="file"
+              id="files"
+              name="files"
+              accept="image/jpeg,image/png,image/webp"
+              multiple
+              hidden
+            />
+          </label>
+          <progress
+            id="progress"
+            max="100"
+            value="0"
+            hidden
+            aria-label="Tiến trình tải ảnh"
+          ></progress>
+          <ul id="uploads" class="uploads" aria-label="Kết quả tải ảnh"></ul>
+          <div id="images" class="images" aria-label="Ảnh hiện có"></div>
+        </div>
+      </section>
+    </main>
+    <script src="/admin/admin.js"></script>
+  </body>
+</html>

@@ -129,8 +129,8 @@ describe("catalog queries (PS-01 → PS-04) on synced seed data", () => {
   });
 
   it("PS-04 returns variants with stock and the QT6 purchasable flag", async () => {
-    const seedP001 = seed.products.find((p) => p.id === "P001")!;
-    const p001 = (await getProduct("P001"))!;
+    const seedP001 = seed.products.find((p) => p.id === "P000001")!;
+    const p001 = (await getProduct("P000001"))!;
     expect(p001.category).toEqual({
       name: "Áo thun nam",
       slug: "ao-thun-nam",
@@ -143,23 +143,23 @@ describe("catalog queries (PS-01 → PS-04) on synced seed data", () => {
     }
     expect(p001.purchasable).toBe(true);
 
-    // P007 has no stock at all.
-    const p007 = (await getProduct("P007"))!;
+    // P000007 has no stock at all.
+    const p007 = (await getProduct("P000007"))!;
     expect(p007.purchasable).toBe(false);
     expect(await getProduct("NOPE")).toBeNull();
   });
 
   it("QT6 hides inactive products from listings and makes them unpurchasable", async () => {
-    await prisma.product.update({ where: { id: "P001" }, data: { isActive: false } });
+    await prisma.product.update({ where: { id: "P000001" }, data: { isActive: false } });
     try {
       const result = await listProducts(filters({ q: "cổ tròn basic" }));
-      expect(result.items.map((p) => p.id)).not.toContain("P001");
-      const p001 = (await getProduct("P001"))!;
+      expect(result.items.map((p) => p.id)).not.toContain("P000001");
+      const p001 = (await getProduct("P000001"))!;
       expect(p001.isActive).toBe(false);
       expect(p001.purchasable).toBe(false);
       expect(p001.variants.every((v) => !v.purchasable)).toBe(true);
     } finally {
-      await prisma.product.update({ where: { id: "P001" }, data: { isActive: true } });
+      await prisma.product.update({ where: { id: "P000001" }, data: { isActive: true } });
     }
   });
 });

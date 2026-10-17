@@ -39,54 +39,54 @@
   ],
   "products": [
     {
-      "id": "P001",
+      "id": "P000001",
       "categoryId": "CAT-NAM-AO-THUN",
       "name": "Áo thun nam cổ tròn basic",
       "description": "Áo thun nam cổ tròn basic chất liệu cotton 100%, form rộng thoải mái. Có các màu hồng pastel, đen, size M, L, XL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P001-1.svg",
-        "/images/P001-2.svg"
+        "products/P000001/seed-1.webp",
+        "products/P000001/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-07-01T10:00:00.000Z",
       "variants": [
         {
-          "sku": "P001-HONG-M",
+          "sku": "P000001-M-HONG",
           "size": "M",
           "color": "Hồng pastel",
           "price": 329000,
           "qty": 1
         },
         {
-          "sku": "P001-HONG-L",
+          "sku": "P000001-L-HONG",
           "size": "L",
           "color": "Hồng pastel",
           "price": 329000,
           "qty": 0
         },
         {
-          "sku": "P001-HONG-XL",
+          "sku": "P000001-XL-HONG",
           "size": "XL",
           "color": "Hồng pastel",
           "price": 329000,
           "qty": 36
         },
         {
-          "sku": "P001-DEN-M",
+          "sku": "P000001-M-DEN",
           "size": "M",
           "color": "Đen",
           "price": 329000,
           "qty": 38
         },
         {
-          "sku": "P001-DEN-L",
+          "sku": "P000001-L-DEN",
           "size": "L",
           "color": "Đen",
           "price": 329000,
           "qty": 50
         },
         {
-          "sku": "P001-DEN-XL",
+          "sku": "P000001-XL-DEN",
           "size": "XL",
           "color": "Đen",
           "price": 329000,
@@ -95,33 +95,33 @@
       ]
     },
     {
-      "id": "P002",
+      "id": "P000002",
       "categoryId": "CAT-NAM-AO-THUN",
       "name": "Áo thun nam cổ tim",
       "description": "Áo thun nam cổ tim chất liệu cotton pha spandex, form rộng thoải mái. Có màu đỏ đô, size M, L, XL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P002-1.svg",
-        "/images/P002-2.svg"
+        "products/P000002/seed-1.webp",
+        "products/P000002/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-07-02T02:00:00.000Z",
       "variants": [
         {
-          "sku": "P002-DO-M",
+          "sku": "P000002-M-DO",
           "size": "M",
           "color": "Đỏ đô",
           "price": 229000,
           "qty": 24
         },
         {
-          "sku": "P002-DO-L",
+          "sku": "P000002-L-DO",
           "size": "L",
           "color": "Đỏ đô",
           "price": 229000,
           "qty": 46
         },
         {
-          "sku": "P002-DO-XL",
+          "sku": "P000002-XL-DO",
           "size": "XL",
           "color": "Đỏ đô",
           "price": 229000,
@@ -130,54 +130,54 @@
       ]
     },
     {
-      "id": "P003",
+      "id": "P000003",
       "categoryId": "CAT-NAM-AO-THUN",
       "name": "Áo thun nam oversize",
       "description": "Áo thun nam oversize chất liệu cotton pha spandex, dáng suông dễ mặc. Có các màu trắng, be, size S, M, L. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P003-1.svg",
-        "/images/P003-2.svg"
+        "products/P000003/seed-1.webp",
+        "products/P000003/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-07-03T03:00:00.000Z",
       "variants": [
         {
-          "sku": "P003-TRANG-S",
+          "sku": "P000003-S-TRANG",
           "size": "S",
           "color": "Trắng",
           "price": 229000,
           "qty": 7
         },
         {
-          "sku": "P003-TRANG-M",
+          "sku": "P000003-M-TRANG",
           "size": "M",
           "color": "Trắng",
           "price": 229000,
           "qty": 3
         },
         {
-          "sku": "P003-TRANG-L",
+          "sku": "P000003-L-TRANG",
           "size": "L",
           "color": "Trắng",
           "price": 229000,
           "qty": 22
         },
         {
-          "sku": "P003-BE-S",
+          "sku": "P000003-S-BE",
           "size": "S",
           "color": "Be",
           "price": 229000,
           "qty": 16
         },
         {
-          "sku": "P003-BE-M",
+          "sku": "P000003-M-BE",
           "size": "M",
           "color": "Be",
           "price": 229000,
           "qty": 2
         },
         {
-          "sku": "P003-BE-L",
+          "sku": "P000003-L-BE",
           "size": "L",
           "color": "Be",
           "price": 229000,
@@ -186,40 +186,40 @@
       ]
     },
     {
-      "id": "P004",
+      "id": "P000004",
       "categoryId": "CAT-NAM-AO-THUN",
       "name": "Áo thun nam in hình phố thị",
       "description": "Áo thun nam in hình phố thị chất liệu vải linen thoáng mát, form rộng thoải mái. Có màu be, size M, L, XL, XXL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P004-1.svg",
-        "/images/P004-2.svg"
+        "products/P000004/seed-1.webp",
+        "products/P000004/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-07-04T03:00:00.000Z",
       "variants": [
         {
-          "sku": "P004-BE-M",
+          "sku": "P000004-M-BE",
           "size": "M",
           "color": "Be",
           "price": 319000,
           "qty": 33
         },
         {
-          "sku": "P004-BE-L",
+          "sku": "P000004-L-BE",
           "size": "L",
           "color": "Be",
           "price": 319000,
           "qty": 28
         },
         {
-          "sku": "P004-BE-XL",
+          "sku": "P000004-XL-BE",
           "size": "XL",
           "color": "Be",
           "price": 319000,
           "qty": 19
         },
         {
-          "sku": "P004-BE-XXL",
+          "sku": "P000004-XXL-BE",
           "size": "XXL",
           "color": "Be",
           "price": 349000,
@@ -228,54 +228,54 @@
       ]
     },
     {
-      "id": "P005",
+      "id": "P000005",
       "categoryId": "CAT-NAM-AO-THUN",
       "name": "Áo thun polo nam",
       "description": "Áo thun polo nam chất liệu cotton pha spandex, dáng suông dễ mặc. Có các màu đỏ đô, đen, size L, XL, XXL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P005-1.svg",
-        "/images/P005-2.svg"
+        "products/P000005/seed-1.webp",
+        "products/P000005/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-07-05T02:00:00.000Z",
       "variants": [
         {
-          "sku": "P005-DO-L",
+          "sku": "P000005-L-DO",
           "size": "L",
           "color": "Đỏ đô",
           "price": 229000,
           "qty": 0
         },
         {
-          "sku": "P005-DO-XL",
+          "sku": "P000005-XL-DO",
           "size": "XL",
           "color": "Đỏ đô",
           "price": 229000,
           "qty": 29
         },
         {
-          "sku": "P005-DO-XXL",
+          "sku": "P000005-XXL-DO",
           "size": "XXL",
           "color": "Đỏ đô",
           "price": 259000,
           "qty": 23
         },
         {
-          "sku": "P005-DEN-L",
+          "sku": "P000005-L-DEN",
           "size": "L",
           "color": "Đen",
           "price": 229000,
           "qty": 0
         },
         {
-          "sku": "P005-DEN-XL",
+          "sku": "P000005-XL-DEN",
           "size": "XL",
           "color": "Đen",
           "price": 229000,
           "qty": 35
         },
         {
-          "sku": "P005-DEN-XXL",
+          "sku": "P000005-XXL-DEN",
           "size": "XXL",
           "color": "Đen",
           "price": 259000,
@@ -284,40 +284,40 @@
       ]
     },
     {
-      "id": "P006",
+      "id": "P000006",
       "categoryId": "CAT-NAM-AO-THUN",
       "name": "Áo thun nam kẻ sọc",
       "description": "Áo thun nam kẻ sọc chất liệu vải linen thoáng mát, dáng suông dễ mặc. Có màu xanh navy, size M, L, XL, XXL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P006-1.svg",
-        "/images/P006-2.svg"
+        "products/P000006/seed-1.webp",
+        "products/P000006/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-07-06T04:00:00.000Z",
       "variants": [
         {
-          "sku": "P006-NAVY-M",
+          "sku": "P000006-M-NAVY",
           "size": "M",
           "color": "Xanh navy",
           "price": 299000,
           "qty": 0
         },
         {
-          "sku": "P006-NAVY-L",
+          "sku": "P000006-L-NAVY",
           "size": "L",
           "color": "Xanh navy",
           "price": 299000,
           "qty": 0
         },
         {
-          "sku": "P006-NAVY-XL",
+          "sku": "P000006-XL-NAVY",
           "size": "XL",
           "color": "Xanh navy",
           "price": 299000,
           "qty": 47
         },
         {
-          "sku": "P006-NAVY-XXL",
+          "sku": "P000006-XXL-NAVY",
           "size": "XXL",
           "color": "Xanh navy",
           "price": 329000,
@@ -326,33 +326,33 @@
       ]
     },
     {
-      "id": "P007",
+      "id": "P000007",
       "categoryId": "CAT-NAM-AO-THUN",
       "name": "Áo thun thể thao nam",
       "description": "Áo thun thể thao nam chất liệu vải kaki co giãn, dáng suông dễ mặc. Có màu xanh navy, size M, L, XL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P007-1.svg",
-        "/images/P007-2.svg"
+        "products/P000007/seed-1.webp",
+        "products/P000007/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-07-07T09:00:00.000Z",
       "variants": [
         {
-          "sku": "P007-NAVY-M",
+          "sku": "P000007-M-NAVY",
           "size": "M",
           "color": "Xanh navy",
           "price": 239000,
           "qty": 0
         },
         {
-          "sku": "P007-NAVY-L",
+          "sku": "P000007-L-NAVY",
           "size": "L",
           "color": "Xanh navy",
           "price": 239000,
           "qty": 0
         },
         {
-          "sku": "P007-NAVY-XL",
+          "sku": "P000007-XL-NAVY",
           "size": "XL",
           "color": "Xanh navy",
           "price": 239000,
@@ -361,40 +361,40 @@
       ]
     },
     {
-      "id": "P008",
+      "id": "P000008",
       "categoryId": "CAT-NAM-AO-THUN",
       "name": "Áo thun nam cotton compact",
       "description": "Áo thun nam cotton compact chất liệu vải linen thoáng mát, dáng suông dễ mặc. Có màu xanh navy, size M, L, XL, XXL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P008-1.svg",
-        "/images/P008-2.svg"
+        "products/P000008/seed-1.webp",
+        "products/P000008/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-07-08T02:00:00.000Z",
       "variants": [
         {
-          "sku": "P008-NAVY-M",
+          "sku": "P000008-M-NAVY",
           "size": "M",
           "color": "Xanh navy",
           "price": 159000,
           "qty": 9
         },
         {
-          "sku": "P008-NAVY-L",
+          "sku": "P000008-L-NAVY",
           "size": "L",
           "color": "Xanh navy",
           "price": 159000,
           "qty": 29
         },
         {
-          "sku": "P008-NAVY-XL",
+          "sku": "P000008-XL-NAVY",
           "size": "XL",
           "color": "Xanh navy",
           "price": 159000,
           "qty": 8
         },
         {
-          "sku": "P008-NAVY-XXL",
+          "sku": "P000008-XXL-NAVY",
           "size": "XXL",
           "color": "Xanh navy",
           "price": 189000,
@@ -403,40 +403,40 @@
       ]
     },
     {
-      "id": "P009",
+      "id": "P000009",
       "categoryId": "CAT-NAM-AO-THUN",
       "name": "Áo thun nam tay raglan",
       "description": "Áo thun nam tay raglan chất liệu vải kaki co giãn, dáng suông dễ mặc. Có màu be, size M, L, XL, XXL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P009-1.svg",
-        "/images/P009-2.svg"
+        "products/P000009/seed-1.webp",
+        "products/P000009/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-07-09T02:00:00.000Z",
       "variants": [
         {
-          "sku": "P009-BE-M",
+          "sku": "P000009-M-BE",
           "size": "M",
           "color": "Be",
           "price": 209000,
           "qty": 0
         },
         {
-          "sku": "P009-BE-L",
+          "sku": "P000009-L-BE",
           "size": "L",
           "color": "Be",
           "price": 209000,
           "qty": 39
         },
         {
-          "sku": "P009-BE-XL",
+          "sku": "P000009-XL-BE",
           "size": "XL",
           "color": "Be",
           "price": 209000,
           "qty": 40
         },
         {
-          "sku": "P009-BE-XXL",
+          "sku": "P000009-XXL-BE",
           "size": "XXL",
           "color": "Be",
           "price": 239000,
@@ -445,33 +445,33 @@
       ]
     },
     {
-      "id": "P010",
+      "id": "P000010",
       "categoryId": "CAT-NAM-AO-THUN",
       "name": "Áo thun nam henley",
       "description": "Áo thun nam henley chất liệu vải kaki co giãn, dáng suông dễ mặc. Có màu xanh rêu, size L, XL, XXL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P010-1.svg",
-        "/images/P010-2.svg"
+        "products/P000010/seed-1.webp",
+        "products/P000010/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-07-10T03:00:00.000Z",
       "variants": [
         {
-          "sku": "P010-REU-L",
+          "sku": "P000010-L-REU",
           "size": "L",
           "color": "Xanh rêu",
           "price": 349000,
           "qty": 23
         },
         {
-          "sku": "P010-REU-XL",
+          "sku": "P000010-XL-REU",
           "size": "XL",
           "color": "Xanh rêu",
           "price": 349000,
           "qty": 3
         },
         {
-          "sku": "P010-REU-XXL",
+          "sku": "P000010-XXL-REU",
           "size": "XXL",
           "color": "Xanh rêu",
           "price": 379000,
@@ -480,33 +480,33 @@
       ]
     },
     {
-      "id": "P011",
+      "id": "P000011",
       "categoryId": "CAT-NAM-QUAN",
       "name": "Quần jeans nam slim fit",
       "description": "Quần jeans nam slim fit chất liệu cotton pha spandex, dáng suông dễ mặc. Có màu xanh navy, size S, M, L. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P011-1.svg",
-        "/images/P011-2.svg"
+        "products/P000011/seed-1.webp",
+        "products/P000011/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-07-11T04:00:00.000Z",
       "variants": [
         {
-          "sku": "P011-NAVY-S",
+          "sku": "P000011-S-NAVY",
           "size": "S",
           "color": "Xanh navy",
           "price": 589000,
           "qty": 6
         },
         {
-          "sku": "P011-NAVY-M",
+          "sku": "P000011-M-NAVY",
           "size": "M",
           "color": "Xanh navy",
           "price": 589000,
           "qty": 22
         },
         {
-          "sku": "P011-NAVY-L",
+          "sku": "P000011-L-NAVY",
           "size": "L",
           "color": "Xanh navy",
           "price": 589000,
@@ -515,40 +515,40 @@
       ]
     },
     {
-      "id": "P012",
+      "id": "P000012",
       "categoryId": "CAT-NAM-QUAN",
       "name": "Quần jeans nam ống suông",
       "description": "Quần jeans nam ống suông chất liệu cotton pha spandex, dáng ôm vừa vặn. Có màu hồng pastel, size M, L, XL, XXL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P012-1.svg",
-        "/images/P012-2.svg"
+        "products/P000012/seed-1.webp",
+        "products/P000012/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-07-12T04:00:00.000Z",
       "variants": [
         {
-          "sku": "P012-HONG-M",
+          "sku": "P000012-M-HONG",
           "size": "M",
           "color": "Hồng pastel",
           "price": 539000,
           "qty": 11
         },
         {
-          "sku": "P012-HONG-L",
+          "sku": "P000012-L-HONG",
           "size": "L",
           "color": "Hồng pastel",
           "price": 539000,
           "qty": 30
         },
         {
-          "sku": "P012-HONG-XL",
+          "sku": "P000012-XL-HONG",
           "size": "XL",
           "color": "Hồng pastel",
           "price": 539000,
           "qty": 20
         },
         {
-          "sku": "P012-HONG-XXL",
+          "sku": "P000012-XXL-HONG",
           "size": "XXL",
           "color": "Hồng pastel",
           "price": 569000,
@@ -557,40 +557,40 @@
       ]
     },
     {
-      "id": "P013",
+      "id": "P000013",
       "categoryId": "CAT-NAM-QUAN",
       "name": "Quần kaki nam",
       "description": "Quần kaki nam chất liệu vải kaki co giãn, dáng ôm vừa vặn. Có màu xanh rêu, size M, L, XL, XXL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P013-1.svg",
-        "/images/P013-2.svg"
+        "products/P000013/seed-1.webp",
+        "products/P000013/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-07-13T09:00:00.000Z",
       "variants": [
         {
-          "sku": "P013-REU-M",
+          "sku": "P000013-M-REU",
           "size": "M",
           "color": "Xanh rêu",
           "price": 299000,
           "qty": 0
         },
         {
-          "sku": "P013-REU-L",
+          "sku": "P000013-L-REU",
           "size": "L",
           "color": "Xanh rêu",
           "price": 299000,
           "qty": 42
         },
         {
-          "sku": "P013-REU-XL",
+          "sku": "P000013-XL-REU",
           "size": "XL",
           "color": "Xanh rêu",
           "price": 299000,
           "qty": 32
         },
         {
-          "sku": "P013-REU-XXL",
+          "sku": "P000013-XXL-REU",
           "size": "XXL",
           "color": "Xanh rêu",
           "price": 329000,
@@ -599,33 +599,33 @@
       ]
     },
     {
-      "id": "P014",
+      "id": "P000014",
       "categoryId": "CAT-NAM-QUAN",
       "name": "Quần short nam",
       "description": "Quần short nam chất liệu vải linen thoáng mát, form rộng thoải mái. Có màu xám, size M, L, XL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P014-1.svg",
-        "/images/P014-2.svg"
+        "products/P000014/seed-1.webp",
+        "products/P000014/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-07-14T07:00:00.000Z",
       "variants": [
         {
-          "sku": "P014-XAM-M",
+          "sku": "P000014-M-XAM",
           "size": "M",
           "color": "Xám",
           "price": 529000,
           "qty": 8
         },
         {
-          "sku": "P014-XAM-L",
+          "sku": "P000014-L-XAM",
           "size": "L",
           "color": "Xám",
           "price": 529000,
           "qty": 0
         },
         {
-          "sku": "P014-XAM-XL",
+          "sku": "P000014-XL-XAM",
           "size": "XL",
           "color": "Xám",
           "price": 529000,
@@ -634,54 +634,54 @@
       ]
     },
     {
-      "id": "P015",
+      "id": "P000015",
       "categoryId": "CAT-NAM-QUAN",
       "name": "Quần jogger nam",
       "description": "Quần jogger nam chất liệu vải kaki co giãn, dáng suông dễ mặc. Có các màu trắng, đen, size S, M, L. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P015-1.svg",
-        "/images/P015-2.svg"
+        "products/P000015/seed-1.webp",
+        "products/P000015/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-07-15T05:00:00.000Z",
       "variants": [
         {
-          "sku": "P015-TRANG-S",
+          "sku": "P000015-S-TRANG",
           "size": "S",
           "color": "Trắng",
           "price": 499000,
           "qty": 44
         },
         {
-          "sku": "P015-TRANG-M",
+          "sku": "P000015-M-TRANG",
           "size": "M",
           "color": "Trắng",
           "price": 499000,
           "qty": 15
         },
         {
-          "sku": "P015-TRANG-L",
+          "sku": "P000015-L-TRANG",
           "size": "L",
           "color": "Trắng",
           "price": 499000,
           "qty": 42
         },
         {
-          "sku": "P015-DEN-S",
+          "sku": "P000015-S-DEN",
           "size": "S",
           "color": "Đen",
           "price": 499000,
           "qty": 41
         },
         {
-          "sku": "P015-DEN-M",
+          "sku": "P000015-M-DEN",
           "size": "M",
           "color": "Đen",
           "price": 499000,
           "qty": 23
         },
         {
-          "sku": "P015-DEN-L",
+          "sku": "P000015-L-DEN",
           "size": "L",
           "color": "Đen",
           "price": 499000,
@@ -690,54 +690,54 @@
       ]
     },
     {
-      "id": "P016",
+      "id": "P000016",
       "categoryId": "CAT-NAM-QUAN",
       "name": "Quần tây nam",
       "description": "Quần tây nam chất liệu vải kaki co giãn, form rộng thoải mái. Có các màu be, hồng pastel, size M, L, XL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P016-1.svg",
-        "/images/P016-2.svg"
+        "products/P000016/seed-1.webp",
+        "products/P000016/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-07-16T02:00:00.000Z",
       "variants": [
         {
-          "sku": "P016-BE-M",
+          "sku": "P000016-M-BE",
           "size": "M",
           "color": "Be",
           "price": 499000,
           "qty": 0
         },
         {
-          "sku": "P016-BE-L",
+          "sku": "P000016-L-BE",
           "size": "L",
           "color": "Be",
           "price": 499000,
           "qty": 39
         },
         {
-          "sku": "P016-BE-XL",
+          "sku": "P000016-XL-BE",
           "size": "XL",
           "color": "Be",
           "price": 499000,
           "qty": 15
         },
         {
-          "sku": "P016-HONG-M",
+          "sku": "P000016-M-HONG",
           "size": "M",
           "color": "Hồng pastel",
           "price": 499000,
           "qty": 36
         },
         {
-          "sku": "P016-HONG-L",
+          "sku": "P000016-L-HONG",
           "size": "L",
           "color": "Hồng pastel",
           "price": 499000,
           "qty": 49
         },
         {
-          "sku": "P016-HONG-XL",
+          "sku": "P000016-XL-HONG",
           "size": "XL",
           "color": "Hồng pastel",
           "price": 499000,
@@ -746,33 +746,33 @@
       ]
     },
     {
-      "id": "P017",
+      "id": "P000017",
       "categoryId": "CAT-NAM-QUAN",
       "name": "Quần short jeans nam",
       "description": "Quần short jeans nam chất liệu cotton 100%, dáng ôm vừa vặn. Có màu hồng pastel, size M, L, XL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P017-1.svg",
-        "/images/P017-2.svg"
+        "products/P000017/seed-1.webp",
+        "products/P000017/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-07-17T06:00:00.000Z",
       "variants": [
         {
-          "sku": "P017-HONG-M",
+          "sku": "P000017-M-HONG",
           "size": "M",
           "color": "Hồng pastel",
           "price": 559000,
           "qty": 5
         },
         {
-          "sku": "P017-HONG-L",
+          "sku": "P000017-L-HONG",
           "size": "L",
           "color": "Hồng pastel",
           "price": 559000,
           "qty": 12
         },
         {
-          "sku": "P017-HONG-XL",
+          "sku": "P000017-XL-HONG",
           "size": "XL",
           "color": "Hồng pastel",
           "price": 559000,
@@ -781,54 +781,54 @@
       ]
     },
     {
-      "id": "P018",
+      "id": "P000018",
       "categoryId": "CAT-NAM-QUAN",
       "name": "Quần nỉ nam",
       "description": "Quần nỉ nam chất liệu cotton pha spandex, dáng suông dễ mặc. Có các màu be, xanh rêu, size L, XL, XXL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P018-1.svg",
-        "/images/P018-2.svg"
+        "products/P000018/seed-1.webp",
+        "products/P000018/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-07-18T02:00:00.000Z",
       "variants": [
         {
-          "sku": "P018-BE-L",
+          "sku": "P000018-L-BE",
           "size": "L",
           "color": "Be",
           "price": 419000,
           "qty": 22
         },
         {
-          "sku": "P018-BE-XL",
+          "sku": "P000018-XL-BE",
           "size": "XL",
           "color": "Be",
           "price": 419000,
           "qty": 19
         },
         {
-          "sku": "P018-BE-XXL",
+          "sku": "P000018-XXL-BE",
           "size": "XXL",
           "color": "Be",
           "price": 449000,
           "qty": 34
         },
         {
-          "sku": "P018-REU-L",
+          "sku": "P000018-L-REU",
           "size": "L",
           "color": "Xanh rêu",
           "price": 419000,
           "qty": 16
         },
         {
-          "sku": "P018-REU-XL",
+          "sku": "P000018-XL-REU",
           "size": "XL",
           "color": "Xanh rêu",
           "price": 419000,
           "qty": 7
         },
         {
-          "sku": "P018-REU-XXL",
+          "sku": "P000018-XXL-REU",
           "size": "XXL",
           "color": "Xanh rêu",
           "price": 449000,
@@ -837,54 +837,54 @@
       ]
     },
     {
-      "id": "P019",
+      "id": "P000019",
       "categoryId": "CAT-NAM-QUAN",
       "name": "Quần cargo nam",
       "description": "Quần cargo nam chất liệu vải linen thoáng mát, dáng suông dễ mặc. Có các màu xanh rêu, đỏ đô, size L, XL, XXL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P019-1.svg",
-        "/images/P019-2.svg"
+        "products/P000019/seed-1.webp",
+        "products/P000019/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-07-19T09:00:00.000Z",
       "variants": [
         {
-          "sku": "P019-REU-L",
+          "sku": "P000019-L-REU",
           "size": "L",
           "color": "Xanh rêu",
           "price": 399000,
           "qty": 0
         },
         {
-          "sku": "P019-REU-XL",
+          "sku": "P000019-XL-REU",
           "size": "XL",
           "color": "Xanh rêu",
           "price": 399000,
           "qty": 0
         },
         {
-          "sku": "P019-REU-XXL",
+          "sku": "P000019-XXL-REU",
           "size": "XXL",
           "color": "Xanh rêu",
           "price": 429000,
           "qty": 18
         },
         {
-          "sku": "P019-DO-L",
+          "sku": "P000019-L-DO",
           "size": "L",
           "color": "Đỏ đô",
           "price": 399000,
           "qty": 40
         },
         {
-          "sku": "P019-DO-XL",
+          "sku": "P000019-XL-DO",
           "size": "XL",
           "color": "Đỏ đô",
           "price": 399000,
           "qty": 21
         },
         {
-          "sku": "P019-DO-XXL",
+          "sku": "P000019-XXL-DO",
           "size": "XXL",
           "color": "Đỏ đô",
           "price": 429000,
@@ -893,54 +893,54 @@
       ]
     },
     {
-      "id": "P020",
+      "id": "P000020",
       "categoryId": "CAT-NAM-QUAN",
       "name": "Quần linen nam",
       "description": "Quần linen nam chất liệu vải linen thoáng mát, dáng suông dễ mặc. Có các màu xanh navy, xám, size L, XL, XXL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P020-1.svg",
-        "/images/P020-2.svg"
+        "products/P000020/seed-1.webp",
+        "products/P000020/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-07-20T08:00:00.000Z",
       "variants": [
         {
-          "sku": "P020-NAVY-L",
+          "sku": "P000020-L-NAVY",
           "size": "L",
           "color": "Xanh navy",
           "price": 479000,
           "qty": 45
         },
         {
-          "sku": "P020-NAVY-XL",
+          "sku": "P000020-XL-NAVY",
           "size": "XL",
           "color": "Xanh navy",
           "price": 479000,
           "qty": 26
         },
         {
-          "sku": "P020-NAVY-XXL",
+          "sku": "P000020-XXL-NAVY",
           "size": "XXL",
           "color": "Xanh navy",
           "price": 509000,
           "qty": 48
         },
         {
-          "sku": "P020-XAM-L",
+          "sku": "P000020-L-XAM",
           "size": "L",
           "color": "Xám",
           "price": 479000,
           "qty": 0
         },
         {
-          "sku": "P020-XAM-XL",
+          "sku": "P000020-XL-XAM",
           "size": "XL",
           "color": "Xám",
           "price": 479000,
           "qty": 47
         },
         {
-          "sku": "P020-XAM-XXL",
+          "sku": "P000020-XXL-XAM",
           "size": "XXL",
           "color": "Xám",
           "price": 509000,
@@ -949,54 +949,54 @@
       ]
     },
     {
-      "id": "P021",
+      "id": "P000021",
       "categoryId": "CAT-NU-AO",
       "name": "Áo thun nữ basic",
       "description": "Áo thun nữ basic chất liệu cotton pha spandex, dáng ôm vừa vặn. Có các màu xám, đỏ đô, size S, M, L. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P021-1.svg",
-        "/images/P021-2.svg"
+        "products/P000021/seed-1.webp",
+        "products/P000021/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-07-21T10:00:00.000Z",
       "variants": [
         {
-          "sku": "P021-XAM-S",
+          "sku": "P000021-S-XAM",
           "size": "S",
           "color": "Xám",
           "price": 179000,
           "qty": 30
         },
         {
-          "sku": "P021-XAM-M",
+          "sku": "P000021-M-XAM",
           "size": "M",
           "color": "Xám",
           "price": 179000,
           "qty": 21
         },
         {
-          "sku": "P021-XAM-L",
+          "sku": "P000021-L-XAM",
           "size": "L",
           "color": "Xám",
           "price": 179000,
           "qty": 44
         },
         {
-          "sku": "P021-DO-S",
+          "sku": "P000021-S-DO",
           "size": "S",
           "color": "Đỏ đô",
           "price": 179000,
           "qty": 7
         },
         {
-          "sku": "P021-DO-M",
+          "sku": "P000021-M-DO",
           "size": "M",
           "color": "Đỏ đô",
           "price": 179000,
           "qty": 29
         },
         {
-          "sku": "P021-DO-L",
+          "sku": "P000021-L-DO",
           "size": "L",
           "color": "Đỏ đô",
           "price": 179000,
@@ -1005,33 +1005,33 @@
       ]
     },
     {
-      "id": "P022",
+      "id": "P000022",
       "categoryId": "CAT-NU-AO",
       "name": "Áo thun nữ croptop",
       "description": "Áo thun nữ croptop chất liệu vải kaki co giãn, form rộng thoải mái. Có màu xám, size L, XL, XXL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P022-1.svg",
-        "/images/P022-2.svg"
+        "products/P000022/seed-1.webp",
+        "products/P000022/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-07-22T06:00:00.000Z",
       "variants": [
         {
-          "sku": "P022-XAM-L",
+          "sku": "P000022-L-XAM",
           "size": "L",
           "color": "Xám",
           "price": 279000,
           "qty": 12
         },
         {
-          "sku": "P022-XAM-XL",
+          "sku": "P000022-XL-XAM",
           "size": "XL",
           "color": "Xám",
           "price": 279000,
           "qty": 23
         },
         {
-          "sku": "P022-XAM-XXL",
+          "sku": "P000022-XXL-XAM",
           "size": "XXL",
           "color": "Xám",
           "price": 309000,
@@ -1040,40 +1040,40 @@
       ]
     },
     {
-      "id": "P023",
+      "id": "P000023",
       "categoryId": "CAT-NU-AO",
       "name": "Áo sơ mi nữ công sở",
       "description": "Áo sơ mi nữ công sở chất liệu vải linen thoáng mát, form rộng thoải mái. Có màu trắng, size S, M, L, XL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P023-1.svg",
-        "/images/P023-2.svg"
+        "products/P000023/seed-1.webp",
+        "products/P000023/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-07-23T04:00:00.000Z",
       "variants": [
         {
-          "sku": "P023-TRANG-S",
+          "sku": "P000023-S-TRANG",
           "size": "S",
           "color": "Trắng",
           "price": 429000,
           "qty": 26
         },
         {
-          "sku": "P023-TRANG-M",
+          "sku": "P000023-M-TRANG",
           "size": "M",
           "color": "Trắng",
           "price": 429000,
           "qty": 7
         },
         {
-          "sku": "P023-TRANG-L",
+          "sku": "P000023-L-TRANG",
           "size": "L",
           "color": "Trắng",
           "price": 429000,
           "qty": 17
         },
         {
-          "sku": "P023-TRANG-XL",
+          "sku": "P000023-XL-TRANG",
           "size": "XL",
           "color": "Trắng",
           "price": 429000,
@@ -1082,33 +1082,33 @@
       ]
     },
     {
-      "id": "P024",
+      "id": "P000024",
       "categoryId": "CAT-NU-AO",
       "name": "Áo blouse nữ tay phồng",
       "description": "Áo blouse nữ tay phồng chất liệu vải linen thoáng mát, dáng ôm vừa vặn. Có màu hồng pastel, size M, L, XL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P024-1.svg",
-        "/images/P024-2.svg"
+        "products/P000024/seed-1.webp",
+        "products/P000024/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-07-24T05:00:00.000Z",
       "variants": [
         {
-          "sku": "P024-HONG-M",
+          "sku": "P000024-M-HONG",
           "size": "M",
           "color": "Hồng pastel",
           "price": 449000,
           "qty": 5
         },
         {
-          "sku": "P024-HONG-L",
+          "sku": "P000024-L-HONG",
           "size": "L",
           "color": "Hồng pastel",
           "price": 449000,
           "qty": 45
         },
         {
-          "sku": "P024-HONG-XL",
+          "sku": "P000024-XL-HONG",
           "size": "XL",
           "color": "Hồng pastel",
           "price": 449000,
@@ -1117,68 +1117,68 @@
       ]
     },
     {
-      "id": "P025",
+      "id": "P000025",
       "categoryId": "CAT-NU-AO",
       "name": "Áo kiểu nữ cổ vuông",
       "description": "Áo kiểu nữ cổ vuông chất liệu cotton 100%, dáng suông dễ mặc. Có các màu be, xanh navy, size M, L, XL, XXL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P025-1.svg",
-        "/images/P025-2.svg"
+        "products/P000025/seed-1.webp",
+        "products/P000025/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-07-25T04:00:00.000Z",
       "variants": [
         {
-          "sku": "P025-BE-M",
+          "sku": "P000025-M-BE",
           "size": "M",
           "color": "Be",
           "price": 219000,
           "qty": 50
         },
         {
-          "sku": "P025-BE-L",
+          "sku": "P000025-L-BE",
           "size": "L",
           "color": "Be",
           "price": 219000,
           "qty": 21
         },
         {
-          "sku": "P025-BE-XL",
+          "sku": "P000025-XL-BE",
           "size": "XL",
           "color": "Be",
           "price": 219000,
           "qty": 18
         },
         {
-          "sku": "P025-BE-XXL",
+          "sku": "P000025-XXL-BE",
           "size": "XXL",
           "color": "Be",
           "price": 249000,
           "qty": 4
         },
         {
-          "sku": "P025-NAVY-M",
+          "sku": "P000025-M-NAVY",
           "size": "M",
           "color": "Xanh navy",
           "price": 219000,
           "qty": 38
         },
         {
-          "sku": "P025-NAVY-L",
+          "sku": "P000025-L-NAVY",
           "size": "L",
           "color": "Xanh navy",
           "price": 219000,
           "qty": 19
         },
         {
-          "sku": "P025-NAVY-XL",
+          "sku": "P000025-XL-NAVY",
           "size": "XL",
           "color": "Xanh navy",
           "price": 219000,
           "qty": 37
         },
         {
-          "sku": "P025-NAVY-XXL",
+          "sku": "P000025-XXL-NAVY",
           "size": "XXL",
           "color": "Xanh navy",
           "price": 249000,
@@ -1187,33 +1187,33 @@
       ]
     },
     {
-      "id": "P026",
+      "id": "P000026",
       "categoryId": "CAT-NU-AO",
       "name": "Áo len nữ dệt kim",
       "description": "Áo len nữ dệt kim chất liệu cotton 100%, dáng suông dễ mặc. Có màu hồng pastel, size S, M, L. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P026-1.svg",
-        "/images/P026-2.svg"
+        "products/P000026/seed-1.webp",
+        "products/P000026/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-07-26T06:00:00.000Z",
       "variants": [
         {
-          "sku": "P026-HONG-S",
+          "sku": "P000026-S-HONG",
           "size": "S",
           "color": "Hồng pastel",
           "price": 279000,
           "qty": 0
         },
         {
-          "sku": "P026-HONG-M",
+          "sku": "P000026-M-HONG",
           "size": "M",
           "color": "Hồng pastel",
           "price": 279000,
           "qty": 0
         },
         {
-          "sku": "P026-HONG-L",
+          "sku": "P000026-L-HONG",
           "size": "L",
           "color": "Hồng pastel",
           "price": 279000,
@@ -1222,54 +1222,54 @@
       ]
     },
     {
-      "id": "P027",
+      "id": "P000027",
       "categoryId": "CAT-NU-AO",
       "name": "Áo khoác nữ dáng ngắn",
       "description": "Áo khoác nữ dáng ngắn chất liệu cotton 100%, dáng suông dễ mặc. Có các màu xanh navy, be, size L, XL, XXL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P027-1.svg",
-        "/images/P027-2.svg"
+        "products/P000027/seed-1.webp",
+        "products/P000027/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-07-27T10:00:00.000Z",
       "variants": [
         {
-          "sku": "P027-NAVY-L",
+          "sku": "P000027-L-NAVY",
           "size": "L",
           "color": "Xanh navy",
           "price": 259000,
           "qty": 1
         },
         {
-          "sku": "P027-NAVY-XL",
+          "sku": "P000027-XL-NAVY",
           "size": "XL",
           "color": "Xanh navy",
           "price": 259000,
           "qty": 36
         },
         {
-          "sku": "P027-NAVY-XXL",
+          "sku": "P000027-XXL-NAVY",
           "size": "XXL",
           "color": "Xanh navy",
           "price": 289000,
           "qty": 4
         },
         {
-          "sku": "P027-BE-L",
+          "sku": "P000027-L-BE",
           "size": "L",
           "color": "Be",
           "price": 259000,
           "qty": 13
         },
         {
-          "sku": "P027-BE-XL",
+          "sku": "P000027-XL-BE",
           "size": "XL",
           "color": "Be",
           "price": 259000,
           "qty": 15
         },
         {
-          "sku": "P027-BE-XXL",
+          "sku": "P000027-XXL-BE",
           "size": "XXL",
           "color": "Be",
           "price": 289000,
@@ -1278,68 +1278,68 @@
       ]
     },
     {
-      "id": "P028",
+      "id": "P000028",
       "categoryId": "CAT-NU-AO",
       "name": "Áo thun nữ in chữ",
       "description": "Áo thun nữ in chữ chất liệu cotton pha spandex, dáng suông dễ mặc. Có các màu đỏ đô, xanh rêu, size M, L, XL, XXL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P028-1.svg",
-        "/images/P028-2.svg"
+        "products/P000028/seed-1.webp",
+        "products/P000028/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-07-28T04:00:00.000Z",
       "variants": [
         {
-          "sku": "P028-DO-M",
+          "sku": "P000028-M-DO",
           "size": "M",
           "color": "Đỏ đô",
           "price": 429000,
           "qty": 26
         },
         {
-          "sku": "P028-DO-L",
+          "sku": "P000028-L-DO",
           "size": "L",
           "color": "Đỏ đô",
           "price": 429000,
           "qty": 18
         },
         {
-          "sku": "P028-DO-XL",
+          "sku": "P000028-XL-DO",
           "size": "XL",
           "color": "Đỏ đô",
           "price": 429000,
           "qty": 6
         },
         {
-          "sku": "P028-DO-XXL",
+          "sku": "P000028-XXL-DO",
           "size": "XXL",
           "color": "Đỏ đô",
           "price": 459000,
           "qty": 0
         },
         {
-          "sku": "P028-REU-M",
+          "sku": "P000028-M-REU",
           "size": "M",
           "color": "Xanh rêu",
           "price": 429000,
           "qty": 9
         },
         {
-          "sku": "P028-REU-L",
+          "sku": "P000028-L-REU",
           "size": "L",
           "color": "Xanh rêu",
           "price": 429000,
           "qty": 2
         },
         {
-          "sku": "P028-REU-XL",
+          "sku": "P000028-XL-REU",
           "size": "XL",
           "color": "Xanh rêu",
           "price": 429000,
           "qty": 8
         },
         {
-          "sku": "P028-REU-XXL",
+          "sku": "P000028-XXL-REU",
           "size": "XXL",
           "color": "Xanh rêu",
           "price": 459000,
@@ -1348,33 +1348,33 @@
       ]
     },
     {
-      "id": "P029",
+      "id": "P000029",
       "categoryId": "CAT-NU-AO",
       "name": "Áo hai dây nữ",
       "description": "Áo hai dây nữ chất liệu cotton 100%, form rộng thoải mái. Có màu đỏ đô, size L, XL, XXL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P029-1.svg",
-        "/images/P029-2.svg"
+        "products/P000029/seed-1.webp",
+        "products/P000029/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-07-29T08:00:00.000Z",
       "variants": [
         {
-          "sku": "P029-DO-L",
+          "sku": "P000029-L-DO",
           "size": "L",
           "color": "Đỏ đô",
           "price": 259000,
           "qty": 0
         },
         {
-          "sku": "P029-DO-XL",
+          "sku": "P000029-XL-DO",
           "size": "XL",
           "color": "Đỏ đô",
           "price": 259000,
           "qty": 40
         },
         {
-          "sku": "P029-DO-XXL",
+          "sku": "P000029-XXL-DO",
           "size": "XXL",
           "color": "Đỏ đô",
           "price": 289000,
@@ -1383,40 +1383,40 @@
       ]
     },
     {
-      "id": "P030",
+      "id": "P000030",
       "categoryId": "CAT-NU-AO",
       "name": "Áo sơ mi nữ linen",
       "description": "Áo sơ mi nữ linen chất liệu cotton pha spandex, form rộng thoải mái. Có màu trắng, size S, M, L, XL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P030-1.svg",
-        "/images/P030-2.svg"
+        "products/P000030/seed-1.webp",
+        "products/P000030/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-07-30T04:00:00.000Z",
       "variants": [
         {
-          "sku": "P030-TRANG-S",
+          "sku": "P000030-S-TRANG",
           "size": "S",
           "color": "Trắng",
           "price": 309000,
           "qty": 47
         },
         {
-          "sku": "P030-TRANG-M",
+          "sku": "P000030-M-TRANG",
           "size": "M",
           "color": "Trắng",
           "price": 309000,
           "qty": 13
         },
         {
-          "sku": "P030-TRANG-L",
+          "sku": "P000030-L-TRANG",
           "size": "L",
           "color": "Trắng",
           "price": 309000,
           "qty": 48
         },
         {
-          "sku": "P030-TRANG-XL",
+          "sku": "P000030-XL-TRANG",
           "size": "XL",
           "color": "Trắng",
           "price": 309000,
@@ -1425,54 +1425,54 @@
       ]
     },
     {
-      "id": "P031",
+      "id": "P000031",
       "categoryId": "CAT-NU-VAY",
       "name": "Váy midi xếp ly",
       "description": "Váy midi xếp ly chất liệu cotton 100%, dáng suông dễ mặc. Có các màu đỏ đô, đen, size M, L, XL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P031-1.svg",
-        "/images/P031-2.svg"
+        "products/P000031/seed-1.webp",
+        "products/P000031/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-07-31T10:00:00.000Z",
       "variants": [
         {
-          "sku": "P031-DO-M",
+          "sku": "P000031-M-DO",
           "size": "M",
           "color": "Đỏ đô",
           "price": 879000,
           "qty": 34
         },
         {
-          "sku": "P031-DO-L",
+          "sku": "P000031-L-DO",
           "size": "L",
           "color": "Đỏ đô",
           "price": 879000,
           "qty": 41
         },
         {
-          "sku": "P031-DO-XL",
+          "sku": "P000031-XL-DO",
           "size": "XL",
           "color": "Đỏ đô",
           "price": 879000,
           "qty": 47
         },
         {
-          "sku": "P031-DEN-M",
+          "sku": "P000031-M-DEN",
           "size": "M",
           "color": "Đen",
           "price": 879000,
           "qty": 38
         },
         {
-          "sku": "P031-DEN-L",
+          "sku": "P000031-L-DEN",
           "size": "L",
           "color": "Đen",
           "price": 879000,
           "qty": 9
         },
         {
-          "sku": "P031-DEN-XL",
+          "sku": "P000031-XL-DEN",
           "size": "XL",
           "color": "Đen",
           "price": 879000,
@@ -1481,40 +1481,40 @@
       ]
     },
     {
-      "id": "P032",
+      "id": "P000032",
       "categoryId": "CAT-NU-VAY",
       "name": "Váy chữ A",
       "description": "Váy chữ A chất liệu vải linen thoáng mát, dáng suông dễ mặc. Có màu xám, size M, L, XL, XXL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P032-1.svg",
-        "/images/P032-2.svg"
+        "products/P000032/seed-1.webp",
+        "products/P000032/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-08-01T07:00:00.000Z",
       "variants": [
         {
-          "sku": "P032-XAM-M",
+          "sku": "P000032-M-XAM",
           "size": "M",
           "color": "Xám",
           "price": 449000,
           "qty": 34
         },
         {
-          "sku": "P032-XAM-L",
+          "sku": "P000032-L-XAM",
           "size": "L",
           "color": "Xám",
           "price": 449000,
           "qty": 34
         },
         {
-          "sku": "P032-XAM-XL",
+          "sku": "P000032-XL-XAM",
           "size": "XL",
           "color": "Xám",
           "price": 449000,
           "qty": 20
         },
         {
-          "sku": "P032-XAM-XXL",
+          "sku": "P000032-XXL-XAM",
           "size": "XXL",
           "color": "Xám",
           "price": 479000,
@@ -1523,68 +1523,68 @@
       ]
     },
     {
-      "id": "P033",
+      "id": "P000033",
       "categoryId": "CAT-NU-VAY",
       "name": "Váy jeans ngắn",
       "description": "Váy jeans ngắn chất liệu cotton 100%, dáng ôm vừa vặn. Có các màu be, đen, size M, L, XL, XXL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P033-1.svg",
-        "/images/P033-2.svg"
+        "products/P000033/seed-1.webp",
+        "products/P000033/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-08-02T10:00:00.000Z",
       "variants": [
         {
-          "sku": "P033-BE-M",
+          "sku": "P000033-M-BE",
           "size": "M",
           "color": "Be",
           "price": 429000,
           "qty": 21
         },
         {
-          "sku": "P033-BE-L",
+          "sku": "P000033-L-BE",
           "size": "L",
           "color": "Be",
           "price": 429000,
           "qty": 29
         },
         {
-          "sku": "P033-BE-XL",
+          "sku": "P000033-XL-BE",
           "size": "XL",
           "color": "Be",
           "price": 429000,
           "qty": 41
         },
         {
-          "sku": "P033-BE-XXL",
+          "sku": "P000033-XXL-BE",
           "size": "XXL",
           "color": "Be",
           "price": 459000,
           "qty": 40
         },
         {
-          "sku": "P033-DEN-M",
+          "sku": "P000033-M-DEN",
           "size": "M",
           "color": "Đen",
           "price": 429000,
           "qty": 46
         },
         {
-          "sku": "P033-DEN-L",
+          "sku": "P000033-L-DEN",
           "size": "L",
           "color": "Đen",
           "price": 429000,
           "qty": 47
         },
         {
-          "sku": "P033-DEN-XL",
+          "sku": "P000033-XL-DEN",
           "size": "XL",
           "color": "Đen",
           "price": 429000,
           "qty": 44
         },
         {
-          "sku": "P033-DEN-XXL",
+          "sku": "P000033-XXL-DEN",
           "size": "XXL",
           "color": "Đen",
           "price": 459000,
@@ -1593,54 +1593,54 @@
       ]
     },
     {
-      "id": "P034",
+      "id": "P000034",
       "categoryId": "CAT-NU-VAY",
       "name": "Đầm suông cổ tròn",
       "description": "Đầm suông cổ tròn chất liệu vải linen thoáng mát, dáng suông dễ mặc. Có các màu xanh navy, xám, size M, L, XL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P034-1.svg",
-        "/images/P034-2.svg"
+        "products/P000034/seed-1.webp",
+        "products/P000034/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-08-03T10:00:00.000Z",
       "variants": [
         {
-          "sku": "P034-NAVY-M",
+          "sku": "P000034-M-NAVY",
           "size": "M",
           "color": "Xanh navy",
           "price": 629000,
           "qty": 18
         },
         {
-          "sku": "P034-NAVY-L",
+          "sku": "P000034-L-NAVY",
           "size": "L",
           "color": "Xanh navy",
           "price": 629000,
           "qty": 9
         },
         {
-          "sku": "P034-NAVY-XL",
+          "sku": "P000034-XL-NAVY",
           "size": "XL",
           "color": "Xanh navy",
           "price": 629000,
           "qty": 16
         },
         {
-          "sku": "P034-XAM-M",
+          "sku": "P000034-M-XAM",
           "size": "M",
           "color": "Xám",
           "price": 629000,
           "qty": 48
         },
         {
-          "sku": "P034-XAM-L",
+          "sku": "P000034-L-XAM",
           "size": "L",
           "color": "Xám",
           "price": 629000,
           "qty": 4
         },
         {
-          "sku": "P034-XAM-XL",
+          "sku": "P000034-XL-XAM",
           "size": "XL",
           "color": "Xám",
           "price": 629000,
@@ -1649,40 +1649,40 @@
       ]
     },
     {
-      "id": "P035",
+      "id": "P000035",
       "categoryId": "CAT-NU-VAY",
       "name": "Đầm maxi hoa nhí",
       "description": "Đầm maxi hoa nhí chất liệu cotton 100%, form rộng thoải mái. Có màu đen, size M, L, XL, XXL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P035-1.svg",
-        "/images/P035-2.svg"
+        "products/P000035/seed-1.webp",
+        "products/P000035/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-08-04T03:00:00.000Z",
       "variants": [
         {
-          "sku": "P035-DEN-M",
+          "sku": "P000035-M-DEN",
           "size": "M",
           "color": "Đen",
           "price": 549000,
           "qty": 38
         },
         {
-          "sku": "P035-DEN-L",
+          "sku": "P000035-L-DEN",
           "size": "L",
           "color": "Đen",
           "price": 549000,
           "qty": 14
         },
         {
-          "sku": "P035-DEN-XL",
+          "sku": "P000035-XL-DEN",
           "size": "XL",
           "color": "Đen",
           "price": 549000,
           "qty": 48
         },
         {
-          "sku": "P035-DEN-XXL",
+          "sku": "P000035-XXL-DEN",
           "size": "XXL",
           "color": "Đen",
           "price": 579000,
@@ -1691,54 +1691,54 @@
       ]
     },
     {
-      "id": "P036",
+      "id": "P000036",
       "categoryId": "CAT-NU-VAY",
       "name": "Đầm công sở dáng ôm",
       "description": "Đầm công sở dáng ôm chất liệu cotton 100%, dáng ôm vừa vặn. Có các màu trắng, đen, size L, XL, XXL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P036-1.svg",
-        "/images/P036-2.svg"
+        "products/P000036/seed-1.webp",
+        "products/P000036/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-08-05T07:00:00.000Z",
       "variants": [
         {
-          "sku": "P036-TRANG-L",
+          "sku": "P000036-L-TRANG",
           "size": "L",
           "color": "Trắng",
           "price": 729000,
           "qty": 37
         },
         {
-          "sku": "P036-TRANG-XL",
+          "sku": "P000036-XL-TRANG",
           "size": "XL",
           "color": "Trắng",
           "price": 729000,
           "qty": 29
         },
         {
-          "sku": "P036-TRANG-XXL",
+          "sku": "P000036-XXL-TRANG",
           "size": "XXL",
           "color": "Trắng",
           "price": 759000,
           "qty": 50
         },
         {
-          "sku": "P036-DEN-L",
+          "sku": "P000036-L-DEN",
           "size": "L",
           "color": "Đen",
           "price": 729000,
           "qty": 25
         },
         {
-          "sku": "P036-DEN-XL",
+          "sku": "P000036-XL-DEN",
           "size": "XL",
           "color": "Đen",
           "price": 729000,
           "qty": 37
         },
         {
-          "sku": "P036-DEN-XXL",
+          "sku": "P000036-XXL-DEN",
           "size": "XXL",
           "color": "Đen",
           "price": 759000,
@@ -1747,68 +1747,68 @@
       ]
     },
     {
-      "id": "P037",
+      "id": "P000037",
       "categoryId": "CAT-NU-VAY",
       "name": "Đầm sơ mi thắt eo",
       "description": "Đầm sơ mi thắt eo chất liệu cotton 100%, dáng suông dễ mặc. Có các màu xanh navy, be, size S, M, L, XL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P037-1.svg",
-        "/images/P037-2.svg"
+        "products/P000037/seed-1.webp",
+        "products/P000037/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-08-06T06:00:00.000Z",
       "variants": [
         {
-          "sku": "P037-NAVY-S",
+          "sku": "P000037-S-NAVY",
           "size": "S",
           "color": "Xanh navy",
           "price": 449000,
           "qty": 36
         },
         {
-          "sku": "P037-NAVY-M",
+          "sku": "P000037-M-NAVY",
           "size": "M",
           "color": "Xanh navy",
           "price": 449000,
           "qty": 0
         },
         {
-          "sku": "P037-NAVY-L",
+          "sku": "P000037-L-NAVY",
           "size": "L",
           "color": "Xanh navy",
           "price": 449000,
           "qty": 44
         },
         {
-          "sku": "P037-NAVY-XL",
+          "sku": "P000037-XL-NAVY",
           "size": "XL",
           "color": "Xanh navy",
           "price": 449000,
           "qty": 40
         },
         {
-          "sku": "P037-BE-S",
+          "sku": "P000037-S-BE",
           "size": "S",
           "color": "Be",
           "price": 449000,
           "qty": 12
         },
         {
-          "sku": "P037-BE-M",
+          "sku": "P000037-M-BE",
           "size": "M",
           "color": "Be",
           "price": 449000,
           "qty": 29
         },
         {
-          "sku": "P037-BE-L",
+          "sku": "P000037-L-BE",
           "size": "L",
           "color": "Be",
           "price": 449000,
           "qty": 5
         },
         {
-          "sku": "P037-BE-XL",
+          "sku": "P000037-XL-BE",
           "size": "XL",
           "color": "Be",
           "price": 449000,
@@ -1817,33 +1817,33 @@
       ]
     },
     {
-      "id": "P038",
+      "id": "P000038",
       "categoryId": "CAT-NU-VAY",
       "name": "Váy len dệt kim",
       "description": "Váy len dệt kim chất liệu vải linen thoáng mát, dáng ôm vừa vặn. Có màu be, size M, L, XL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P038-1.svg",
-        "/images/P038-2.svg"
+        "products/P000038/seed-1.webp",
+        "products/P000038/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-08-07T04:00:00.000Z",
       "variants": [
         {
-          "sku": "P038-BE-M",
+          "sku": "P000038-M-BE",
           "size": "M",
           "color": "Be",
           "price": 879000,
           "qty": 28
         },
         {
-          "sku": "P038-BE-L",
+          "sku": "P000038-L-BE",
           "size": "L",
           "color": "Be",
           "price": 879000,
           "qty": 42
         },
         {
-          "sku": "P038-BE-XL",
+          "sku": "P000038-XL-BE",
           "size": "XL",
           "color": "Be",
           "price": 879000,
@@ -1852,54 +1852,54 @@
       ]
     },
     {
-      "id": "P039",
+      "id": "P000039",
       "categoryId": "CAT-NU-VAY",
       "name": "Đầm babydoll",
       "description": "Đầm babydoll chất liệu cotton pha spandex, form rộng thoải mái. Có các màu trắng, hồng pastel, size S, M, L. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P039-1.svg",
-        "/images/P039-2.svg"
+        "products/P000039/seed-1.webp",
+        "products/P000039/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-08-08T06:00:00.000Z",
       "variants": [
         {
-          "sku": "P039-TRANG-S",
+          "sku": "P000039-S-TRANG",
           "size": "S",
           "color": "Trắng",
           "price": 349000,
           "qty": 41
         },
         {
-          "sku": "P039-TRANG-M",
+          "sku": "P000039-M-TRANG",
           "size": "M",
           "color": "Trắng",
           "price": 349000,
           "qty": 40
         },
         {
-          "sku": "P039-TRANG-L",
+          "sku": "P000039-L-TRANG",
           "size": "L",
           "color": "Trắng",
           "price": 349000,
           "qty": 16
         },
         {
-          "sku": "P039-HONG-S",
+          "sku": "P000039-S-HONG",
           "size": "S",
           "color": "Hồng pastel",
           "price": 349000,
           "qty": 49
         },
         {
-          "sku": "P039-HONG-M",
+          "sku": "P000039-M-HONG",
           "size": "M",
           "color": "Hồng pastel",
           "price": 349000,
           "qty": 16
         },
         {
-          "sku": "P039-HONG-L",
+          "sku": "P000039-L-HONG",
           "size": "L",
           "color": "Hồng pastel",
           "price": 349000,
@@ -1908,54 +1908,54 @@
       ]
     },
     {
-      "id": "P040",
+      "id": "P000040",
       "categoryId": "CAT-NU-VAY",
       "name": "Đầm hai dây lụa",
       "description": "Đầm hai dây lụa chất liệu vải kaki co giãn, form rộng thoải mái. Có các màu đỏ đô, xanh rêu, size L, XL, XXL. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.",
       "images": [
-        "/images/P040-1.svg",
-        "/images/P040-2.svg"
+        "products/P000040/seed-1.webp",
+        "products/P000040/seed-2.webp"
       ],
       "isActive": true,
       "createdAt": "2026-08-09T09:00:00.000Z",
       "variants": [
         {
-          "sku": "P040-DO-L",
+          "sku": "P000040-L-DO",
           "size": "L",
           "color": "Đỏ đô",
           "price": 469000,
           "qty": 50
         },
         {
-          "sku": "P040-DO-XL",
+          "sku": "P000040-XL-DO",
           "size": "XL",
           "color": "Đỏ đô",
           "price": 469000,
           "qty": 15
         },
         {
-          "sku": "P040-DO-XXL",
+          "sku": "P000040-XXL-DO",
           "size": "XXL",
           "color": "Đỏ đô",
           "price": 499000,
           "qty": 44
         },
         {
-          "sku": "P040-REU-L",
+          "sku": "P000040-L-REU",
           "size": "L",
           "color": "Xanh rêu",
           "price": 469000,
           "qty": 15
         },
         {
-          "sku": "P040-REU-XL",
+          "sku": "P000040-XL-REU",
           "size": "XL",
           "color": "Xanh rêu",
           "price": 469000,
           "qty": 25
         },
         {
-          "sku": "P040-REU-XXL",
+          "sku": "P000040-XXL-REU",
           "size": "XXL",
           "color": "Xanh rêu",
           "price": 499000,

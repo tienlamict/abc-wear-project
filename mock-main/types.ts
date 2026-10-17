@@ -1,4 +1,4 @@
-/** Shapes of the mock Main System's in-memory data (also the format of seed.json). */
+/** Shapes of the mock Main System's data (seed.json, and data/store.json at runtime). */
 export interface SeedCategory {
   id: string;
   parentId: string | null;
@@ -19,16 +19,23 @@ export interface SeedProduct {
   categoryId: string;
   name: string;
   description: string;
-  /** Paths served by the mock itself (`/images/...`); made absolute in responses. */
+  /** MinIO object keys in display order (the first is the main image); URLs in responses. */
   images: string[];
   isActive: boolean;
   createdAt: string;
+  updatedAt?: string;
   variants: SeedVariant[];
 }
 
 export interface Seed {
   categories: SeedCategory[];
   products: SeedProduct[];
+}
+
+/** Everything Main keeps between restarts (`mock-main/data/store.json`). */
+export interface StoreData extends Seed {
+  version: 1;
+  orders: MockOrder[];
 }
 
 /** IF-04 payload as sent by the website (see src/modules/integration/types.ts). */

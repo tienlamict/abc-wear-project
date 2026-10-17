@@ -1,10 +1,13 @@
 /**
  * Writes mock-main/seed.json. Output is deterministic (fixed PRNG seed), so re-running
  * produces the same file: 6 categories on 2 levels, 40 products, 3–4 sizes × 1–2 colors each.
+ * Product ids follow Main's rule (`P` + 6 digits), SKUs the admin's `{productId}-{size}-{color}`.
+ * Images are MinIO object keys; `pnpm seed:images` creates the objects.
  * Run: pnpm mock:seed
  */
 import { writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import { COLOR_CODES, productIdFor, seedImageKey } from "./catalog-rules";
 import type { Seed, SeedCategory, SeedProduct, SeedVariant } from "./types";
 
 // mulberry32: tiny deterministic PRNG.
@@ -94,16 +97,7 @@ const NAMES: Record<string, { names: string[]; price: [number, number] }> = {
   },
 };
 
-const COLORS = [
-  { name: "Đen", code: "DEN" },
-  { name: "Trắng", code: "TRANG" },
-  { name: "Xám", code: "XAM" },
-  { name: "Xanh navy", code: "NAVY" },
-  { name: "Be", code: "BE" },
-  { name: "Đỏ đô", code: "DO" },
-  { name: "Xanh rêu", code: "REU" },
-  { name: "Hồng pastel", code: "HONG" },
-] as const;
+const COLORS = Object.entries(COLOR_CODES).map(([name, code]) => ({ name, code }));
 
 const SIZES = ["S", "M", "L", "XL", "XXL"] as const;
 
@@ -116,7 +110,7 @@ const createdBase = Date.UTC(2026, 6, 1, 2, 0, 0); // 2026-07-01 09:00 Vietnam t
 for (const [categoryId, { names, price }] of Object.entries(NAMES)) {
   for (const name of names) {
     const index = products.length + 1;
-    const id = `P${String(index).padStart(3, "0")}`;
+    const id = productIdFor(index);
 
     const sizeCount = int(3, 4);
     const sizeStart = int(0, SIZES.length - sizeCount);
@@ -131,7 +125,7 @@ for (const [categoryId, { names, price }] of Object.entries(NAMES)) {
 
     const variants: SeedVariant[] = colors.flatMap((color) =>
       sizes.map((size) => ({
-        sku: `${id}-${color.code}-${size}`,
+        sku: `${id}-${size}-${color.code}`,
         size,
         color: color.name,
         price: size === "XXL" ? basePrice + 30_000 : basePrice,
@@ -147,7 +141,7 @@ for (const [categoryId, { names, price }] of Object.entries(NAMES)) {
         `${name} chất liệu ${pick(MATERIALS)}, ${pick(FITS)}. ` +
         `Có ${colors.length > 1 ? "các màu " + colors.map((c) => c.name.toLowerCase()).join(", ") : "màu " + firstColor.name.toLowerCase()}, ` +
         `size ${sizes.join(", ")}. Giặt máy ở nhiệt độ thường, không dùng chất tẩy.`,
-      images: [`/images/${id}-1.svg`, `/images/${id}-2.svg`],
+      images: [seedImageKey(id, 1), seedImageKey(id, 2)],
       isActive: true,
       createdAt: new Date(
         createdBase + (index - 1) * 86_400_000 + int(0, 8) * 3_600_000,

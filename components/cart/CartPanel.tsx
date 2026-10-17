@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { formatVnd } from "@/lib/money";
 import type { CartLine, CartView } from "@/modules/order/cart";
+import { ImagePlaceholder } from "../ImagePlaceholder";
 import { callApi } from "../form";
 
 const MAX_LINE_QTY = 10; // QT7
@@ -70,7 +71,7 @@ export function CartPanel({ initialCart }: { initialCart: CartView }) {
               className="flex gap-4 p-4"
             >
               <div className="relative h-28 w-20 shrink-0 overflow-hidden rounded bg-gray-100">
-                {line.image && (
+                {line.image ? (
                   <Image
                     src={line.image}
                     alt={line.productName}
@@ -78,6 +79,8 @@ export function CartPanel({ initialCart }: { initialCart: CartView }) {
                     sizes="80px"
                     className="object-cover"
                   />
+                ) : (
+                  <ImagePlaceholder compact />
                 )}
               </div>
               <div className="min-w-0 flex-1">

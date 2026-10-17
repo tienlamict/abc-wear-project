@@ -42,13 +42,15 @@ describe("syncCatalog / syncStock against the real mock Main System", () => {
     expect(await prisma.productVariant.count()).toBe(seedVariants.length);
 
     const p001 = await prisma.product.findUniqueOrThrow({
-      where: { id: "P001" },
+      where: { id: "P000001" },
       include: { variants: true },
     });
-    const seedP001 = seed.products.find((p) => p.id === "P001")!;
+    const seedP001 = seed.products.find((p) => p.id === "P000001")!;
     expect(p001.name).toBe(seedP001.name);
     expect(p001.createdAt.toISOString()).toBe(seedP001.createdAt);
-    expect(p001.images).toEqual(seedP001.images.map((path) => mock.baseUrl + path));
+    expect(p001.images).toEqual(
+      seedP001.images.map((key) => `http://localhost:9000/product-images/${key}`),
+    );
     expect(p001.variants).toHaveLength(seedP001.variants.length);
     // Stock is not part of IF-01.
     expect(p001.variants.every((v) => v.availableQty === 0)).toBe(true);
@@ -115,7 +117,7 @@ describe("syncCatalog / syncStock against the real mock Main System", () => {
     expect(row.availableQty).toBe(0);
 
     const updated = await prisma.product.findUniqueOrThrow({
-      where: { id: "P001" },
+      where: { id: "P000001" },
       include: { variants: true },
     });
     expect(updated.name).toBe("Áo thun nam cổ tròn basic (mới)");

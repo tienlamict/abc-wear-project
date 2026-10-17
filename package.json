@@ -22,6 +22,7 @@
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "mock:seed": "tsx mock-main/generate-seed.ts",
+    "seed:images": "tsx mock-main/seed-images.ts",
     "sync": "tsx worker/sync.ts",
     "postinstall": "prisma generate",
     "db:migrate": "prisma migrate dev",
@@ -29,14 +30,19 @@
     "db:seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@fastify/basic-auth": "6.3.0",
+    "@fastify/multipart": "10.1.2",
+    "@fastify/static": "10.1.5",
     "@prisma/client": "6.19.3",
     "bcryptjs": "^3.0.3",
     "fastify": "5",
     "jose": "^6.2.12",
+    "minio": "8.0.7",
     "next": "14",
     "nodemailer": "^10.1.1",
     "react": "18",
     "react-dom": "18",
+    "sharp": "0.35.5",
     "zod": "^4.6.7"
   },
   "devDependencies": {
