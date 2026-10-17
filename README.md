@@ -6,6 +6,7 @@ Website không có trang quản trị: sản phẩm và ảnh được nhập �
 website nhận lại qua đồng bộ.
 Đặc tả: [spec.md](spec.md) · Tiến độ: [PROGRESS.md](PROGRESS.md) · Quyết định kỹ thuật: [DECISIONS.md](DECISIONS.md).
 Hướng dẫn chạy và kiểm thử chi tiết (70 ca kiểm thử thủ công, xử lý sự cố): [docs/huong_dan_su_dung.md](docs/huong_dan_su_dung.md).
+Kịch bản demo 20 phút (lời dẫn, câu hỏi thường gặp, xử lý sự cố khi trình bày): [docs/kich_ban_demo.md](docs/kich_ban_demo.md).
 
 ## Yêu cầu
 
@@ -64,6 +65,8 @@ Tài khoản (giá trị trong `.env.example`, chỉ dùng ở dev):
 - Console MinIO http://localhost:9001: `MINIO_ROOT_USER` / `MINIO_ROOT_PASSWORD` (`minioadmin` / `change-me-12345`).
 
 ## Kịch bản demo
+
+Bản đầy đủ có lời dẫn và phương án dự phòng: [docs/kich_ban_demo.md](docs/kich_ban_demo.md).
 
 Mở song song http://localhost:3000 (website), http://localhost:4100/admin và http://localhost:4100/sim
 (Main System), http://localhost:8025 (hộp thư).

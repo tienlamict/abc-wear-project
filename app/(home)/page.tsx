@@ -1,4 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
+import heroBanner from "../../public/images/hero-banner.webp";
 import { ProductGrid } from "@/components/ProductGrid";
 import { getCategoryTree, listProducts, parseProductFilters } from "@/modules/catalog";
 
@@ -11,11 +13,38 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-10">
-      <section className="rounded-xl bg-gray-900 px-6 py-10 text-white">
-        <h1 className="text-2xl font-bold sm:text-3xl">Thời trang ABC Wear</h1>
-        <p className="mt-2 max-w-xl text-gray-300">
-          Giao hàng toàn quốc, thanh toán khi nhận hàng. Không cần tài khoản để đặt mua.
-        </p>
+      <section className="relative isolate overflow-hidden rounded-xl bg-[#e9dccb]">
+        <Image
+          src={heroBanner}
+          alt=""
+          fill
+          priority
+          placeholder="blur"
+          sizes="(min-width: 1280px) 1280px, 100vw"
+          className="-z-10 object-cover object-right"
+        />
+        {/* Keeps the text readable where it overlaps the picture (narrow screens). */}
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#efe4d6] via-[#efe4d6]/80 to-transparent sm:via-[#efe4d6]/40" />
+        <div className="max-w-md px-6 py-12 sm:px-10 sm:py-20">
+          <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">Thời trang ABC Wear</h1>
+          <p className="mt-3 text-gray-700">
+            Giao hàng toàn quốc, thanh toán khi nhận hàng. Không cần tài khoản để đặt mua.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Link
+              href="/danh-muc/nu"
+              className="rounded-md bg-gray-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-gray-700"
+            >
+              Thời trang nữ
+            </Link>
+            <Link
+              href="/danh-muc/nam"
+              className="rounded-md border border-gray-900 bg-white/70 px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-white"
+            >
+              Thời trang nam
+            </Link>
+          </div>
+        </div>
       </section>
 
       <section>
