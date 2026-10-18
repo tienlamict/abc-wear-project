@@ -1,6 +1,6 @@
-# spec.md — Web Site Selling System (ABC Wear) · Bản rút gọn 1 tuần
+# spec.md — Web Site Selling System (ABC Wear)
 
-> Đặc tả triển khai cho Claude Code, thời hạn **1 tuần**, chia 8 milestone và 3 sprint.
+> Đặc tả triển khai cho Claude Code, chia 8 milestone và 3 sprint.
 > Nguồn: tài liệu "Phân tích và thiết kế hệ thống – Web Site Selling System (ABC Wear)". Mã use case, giao diện IF, NFR giữ nguyên để truy vết.
 > **Không có thanh toán trực tuyến** — mọi đơn là COD. **CSDL: MySQL 8.** **Ảnh sản phẩm: MinIO.**
 > Sản phẩm và ảnh được quản lý ở **Main System** (bản demo: trang `/admin` của mock Main System), website chỉ nhận lại qua đồng bộ.
@@ -693,23 +693,6 @@ Nếu cuối một sprint chưa đạt DoD, phần dở dang chuyển sang đầ
 
 ---
 
-## 15. Đã lược bỏ so với bản đầy đủ
-
-| Hạng mục | Lý do | Cách trình bày khi báo cáo |
-|---|---|---|
-| Trang quản trị trên website | RFP xếp chức năng quản trị nội bộ ngoài phạm vi; Main System là nguồn dữ liệu sản phẩm duy nhất | Quản lý sản phẩm và ảnh minh họa bằng `/admin` của mock Main System (mục 9.5) |
-| 6 service + API gateway + Nginx + nhiều instance | Quá nặng cho 1 tuần | Code đã chia module đúng ranh giới 3 service + adapter; tách service là bước giai đoạn 2 |
-| Redis, Meilisearch | 40–60 sản phẩm không cần | MySQL đủ nhanh ở quy mô demo; k6 chứng minh < 2s |
-| MA-05 sổ địa chỉ, MA-06 hủy tài khoản | Use case mức "Should" | Thay bằng một địa chỉ mặc định trong hồ sơ |
-| OD-07 hủy đơn, IF-06 | Use case mức "Should" | Giai đoạn 2 |
-| Xác thực email khi đăng ký, SMS OTP | Không bắt buộc trong RFP | Giai đoạn 2 |
-| Refresh token, CSRF token riêng | Đơn giản hóa xác thực | Cookie `SameSite=Lax` + httpOnly đủ cho demo |
-| Bảng outbox riêng, job đối soát | Gộp vào cột trên bảng `orders` | Vẫn đảm bảo không mất, không trùng đơn |
-| HMAC webhook | Thay bằng secret header | Giai đoạn 2 |
-| E2E đa trình duyệt, ZAP, chaos test, backup/restore | Thời gian | Chạy Chromium; mô tả trong báo cáo |
-| Runbook go-live, chế độ bảo trì, compose production | Thời gian | Giai đoạn 2 |
-
----
 
 ## 16. Biến môi trường (`.env.example`)
 
